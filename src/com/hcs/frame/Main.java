@@ -25,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 
 import com.hcs.util.DataOperator;
+import com.hcs.util.UIUtil;
 
 public class Main extends JFrame {
 
@@ -148,7 +149,7 @@ public class Main extends JFrame {
 			inputInfo.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					BasicInfoInputFrame basicInfoFrame = new BasicInfoInputFrame();
-					basicInfoFrame.setLocation(400, 250);
+					UIUtil.setInCenter(basicInfoFrame);
 					basicInfoFrame.setVisible(true);
 				}
 			});
@@ -237,6 +238,7 @@ public class Main extends JFrame {
 
 				public void actionPerformed(ActionEvent e) {
 					BasicInfoManageFrame infoManageFrame = new BasicInfoManageFrame();
+					UIUtil.setInCenter(infoManageFrame);
 					infoManageFrame.setVisible(true);
 				}
 				
@@ -273,7 +275,7 @@ public class Main extends JFrame {
 			public void run() {
 				Main thisClass = new Main();
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setLocation(250, 200);
+				UIUtil.setInCenter(thisClass);
 				thisClass.setVisible(true);
 				thisClass.addWindowListener(new WindowAdapter(){
 

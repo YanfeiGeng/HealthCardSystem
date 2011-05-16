@@ -1,5 +1,9 @@
 package com.hcs.util;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class UIUtil {
@@ -11,6 +15,16 @@ public class UIUtil {
 			return false;
 		}
 		return true;
+	}
+	
+	public static void setInCenter(JFrame UI){
+		int width = UI.getWidth();
+		int height = UI.getHeight();
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = kit.getScreenSize();
+		int screenWidth = screenSize.width;
+		int screenHeight = screenSize.height;
+		UI.setLocation((screenWidth - width) / 2, (screenHeight - height) / 2);
 	}
 
 	public static void main(String[] args) {

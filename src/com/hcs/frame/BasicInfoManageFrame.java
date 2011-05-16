@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import com.hcs.util.DataOperator;
+import com.hcs.util.UIUtil;
 
 public class BasicInfoManageFrame extends JFrame {
 
@@ -61,6 +62,7 @@ public class BasicInfoManageFrame extends JFrame {
 					} else {
 						String[] value = data.get(rowSel);
 						BasicInfoInputFrame infoInputFrame = new BasicInfoInputFrame();
+						UIUtil.setInCenter(infoInputFrame);
 						infoInputFrame.initValue(value);
 						infoInputFrame.setVisible(true);
 					}
