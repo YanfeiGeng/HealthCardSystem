@@ -2,12 +2,19 @@ package com.hcs.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
@@ -28,7 +36,6 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JPanel fangshePanel = null;
 	private JPanel xindiantuPanel = null;
 	private JPanel jianyankePanel = null;
-	private JEditorPane jEditorPane = null;
 	private JLabel jLabel = null;
 	private JTextField jTextField = null;
 	private JLabel jLabel1 = null;
@@ -43,9 +50,17 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField jTextField4 = null;
 	private JTextField jTextField5 = null;
 	private JTextField jTextField6 = null;
-	private JEditorPane jEditorPane1 = null;
-	private JEditorPane jEditorPane2 = null;
 	private JScrollPane jScrollPane = null;
+	private JEditorPane jEditorPane3 = null;
+	private JScrollPane jScrollPane1 = null;
+	private JEditorPane jEditorPane2 = null;
+	private JScrollPane jScrollPane2 = null;
+	private JEditorPane jEditorPane1 = null;
+	private JScrollPane jScrollPane3 = null;
+	private JEditorPane jEditorPane = null;
+	private JPanel jPanel = null;
+	private JPanel jPanel1 = null;
+	private JButton jButton1 = null;
 	/**
 	 * This method initializes jTabbedPane	
 	 * 	
@@ -70,18 +85,29 @@ public class HealthCheckResultInputFrame extends JFrame {
 	 */
 	private JPanel getGeneral() {
 		if (general == null) {
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.fill = GridBagConstraints.BOTH;
-			gridBagConstraints.gridy = 0;
-			gridBagConstraints.weightx = 1.0;
-			gridBagConstraints.weighty = 1.0;
-			gridBagConstraints.gridx = 0;
-			TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), "一般情况检查结果");
+			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+			gridBagConstraints61.gridx = 0;
+			gridBagConstraints61.gridy = 1;
+			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+			gridBagConstraints51.gridx = 0;
+			gridBagConstraints51.gridy = 1;
+			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+			gridBagConstraints31.gridx = 0;
+			gridBagConstraints31.gridy = 1;
+			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+			gridBagConstraints18.fill = GridBagConstraints.BOTH;
+			gridBagConstraints18.gridy = 0;
+			gridBagConstraints18.weightx = 1.0;
+			gridBagConstraints18.weighty = 1.0;
+			gridBagConstraints18.gridx = 0;
 			general = new JPanel();
 			general.setLayout(new GridBagLayout());
 			general.setName("generalInfoPanel");
-			general.setBorder(titledBorder);
-			general.add(getJEditorPane(), gridBagConstraints);
+			general.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), "一般情况检查结果", TitledBorder.LEADING, TitledBorder.TOP, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			general.add(getJScrollPane3(), gridBagConstraints18);
+			general.add(getJPanel(), gridBagConstraints31);
+			general.add(getJPanel1(), gridBagConstraints51);
+			general.add(getJButton1(), gridBagConstraints61);
 		}
 		return general;
 	}
@@ -127,32 +153,32 @@ public class HealthCheckResultInputFrame extends JFrame {
 			gridBagConstraints8.gridx = 0;
 			gridBagConstraints8.gridy = 6;
 			jLabel6 = new JLabel();
-			jLabel6.setText("JLabel");
+			jLabel6.setText("肌酸磷酸激酶：");
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 0;
 			gridBagConstraints7.gridy = 5;
 			jLabel5 = new JLabel();
-			jLabel5.setText("JLabel");
+			jLabel5.setText("低密度脂蛋白胆固醇(LDL-CH)：");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.gridx = 0;
 			gridBagConstraints6.gridy = 4;
 			jLabel4 = new JLabel();
-			jLabel4.setText("JLabel");
+			jLabel4.setText("高密度脂蛋白胆固醇(HDL-CH)：");
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 0;
 			gridBagConstraints5.gridy = 3;
 			jLabel3 = new JLabel();
-			jLabel3.setText("JLabel");
+			jLabel3.setText("尿酸：");
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.gridy = 2;
 			jLabel2 = new JLabel();
-			jLabel2.setText("JLabel");
+			jLabel2.setText("白球比值：");
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.gridy = 1;
 			jLabel1 = new JLabel();
-			jLabel1.setText("JLabel");
+			jLabel1.setText("间接胆红素：");
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.fill = GridBagConstraints.VERTICAL;
 			gridBagConstraints2.gridy = 0;
@@ -161,11 +187,13 @@ public class HealthCheckResultInputFrame extends JFrame {
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
 			gridBagConstraints1.gridy = 0;
+			gridBagConstraints1.insets = new Insets(10, 0, 0, 0);
 			jLabel = new JLabel();
-			jLabel.setText("JLabel");
+			jLabel.setText("总胆红素：");
+			jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 			shenghuaPanel = new JPanel();
 			shenghuaPanel.setLayout(new GridBagLayout());
-			shenghuaPanel.setBorder(BorderFactory.createTitledBorder(" 生化室检查结果"));
+			shenghuaPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), " 生化室检查结果", TitledBorder.LEADING, TitledBorder.TOP, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			shenghuaPanel.add(jLabel, gridBagConstraints1);
 			shenghuaPanel.add(getJTextField(), gridBagConstraints2);
 			shenghuaPanel.add(jLabel1, gridBagConstraints3);
@@ -199,8 +227,8 @@ public class HealthCheckResultInputFrame extends JFrame {
 			gridBagConstraints15.gridx = 0;
 			fangshePanel = new JPanel();
 			fangshePanel.setLayout(new GridBagLayout());
-			fangshePanel.setBorder(BorderFactory.createTitledBorder(null, "放射科检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			fangshePanel.add(getJEditorPane1(), gridBagConstraints15);
+			fangshePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), "放射科检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			fangshePanel.add(getJScrollPane2(), gridBagConstraints15);
 		}
 		return fangshePanel;
 	}
@@ -220,8 +248,8 @@ public class HealthCheckResultInputFrame extends JFrame {
 			gridBagConstraints16.gridx = 0;
 			xindiantuPanel = new JPanel();
 			xindiantuPanel.setLayout(new GridBagLayout());
-			xindiantuPanel.setBorder(BorderFactory.createTitledBorder(null, "心电图检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			xindiantuPanel.add(getJEditorPane2(), gridBagConstraints16);
+			xindiantuPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), "心电图检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			xindiantuPanel.add(getJScrollPane1(), gridBagConstraints16);
 		}
 		return xindiantuPanel;
 	}
@@ -239,24 +267,14 @@ public class HealthCheckResultInputFrame extends JFrame {
 			gridBagConstraints17.weightx = 1.0;
 			gridBagConstraints17.weighty = 1.0;
 			gridBagConstraints17.gridx = 0;
+			TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40), "检验科检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51));
+			titledBorder.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 			jianyankePanel = new JPanel();
 			jianyankePanel.setLayout(new GridBagLayout());
-			jianyankePanel.setBorder(BorderFactory.createTitledBorder(null, "检验科检查结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			jianyankePanel.setBorder(titledBorder);
 			jianyankePanel.add(getJScrollPane(), gridBagConstraints17);
 		}
 		return jianyankePanel;
-	}
-
-	/**
-	 * This method initializes jEditorPane	
-	 * 	
-	 * @return javax.swing.JEditorPane	
-	 */
-	private JEditorPane getJEditorPane() {
-		if (jEditorPane == null) {
-			jEditorPane = new JEditorPane();
-		}
-		return jEditorPane;
 	}
 
 	/**
@@ -267,6 +285,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField() {
 		if (jTextField == null) {
 			jTextField = new JTextField();
+			jTextField.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField;
 	}
@@ -279,6 +298,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField1() {
 		if (jTextField1 == null) {
 			jTextField1 = new JTextField();
+			jTextField1.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField1;
 	}
@@ -291,6 +311,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField2() {
 		if (jTextField2 == null) {
 			jTextField2 = new JTextField();
+			jTextField2.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField2;
 	}
@@ -303,6 +324,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField3() {
 		if (jTextField3 == null) {
 			jTextField3 = new JTextField();
+			jTextField3.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField3;
 	}
@@ -315,6 +337,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField4() {
 		if (jTextField4 == null) {
 			jTextField4 = new JTextField();
+			jTextField4.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField4;
 	}
@@ -327,6 +350,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField5() {
 		if (jTextField5 == null) {
 			jTextField5 = new JTextField();
+			jTextField5.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField5;
 	}
@@ -339,20 +363,47 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JTextField getJTextField6() {
 		if (jTextField6 == null) {
 			jTextField6 = new JTextField();
+			jTextField6.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField6;
 	}
 
 	/**
-	 * This method initializes jEditorPane1	
+	 * This method initializes jScrollPane	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPane() {
+		if (jScrollPane == null) {
+			jScrollPane = new JScrollPane();
+			jScrollPane.setViewportView(getJEditorPane3());
+		}
+		return jScrollPane;
+	}
+
+	/**
+	 * This method initializes jEditorPane3	
 	 * 	
 	 * @return javax.swing.JEditorPane	
 	 */
-	private JEditorPane getJEditorPane1() {
-		if (jEditorPane1 == null) {
-			jEditorPane1 = new JEditorPane();
+	private JEditorPane getJEditorPane3() {
+		if (jEditorPane3 == null) {
+			jEditorPane3 = new JEditorPane();
 		}
-		return jEditorPane1;
+		return jEditorPane3;
+	}
+
+	/**
+	 * This method initializes jScrollPane1	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPane1() {
+		if (jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setViewportView(getJEditorPane2());
+		}
+		return jScrollPane1;
 	}
 
 	/**
@@ -368,20 +419,126 @@ public class HealthCheckResultInputFrame extends JFrame {
 	}
 
 	/**
-	 * This method initializes jScrollPane	
+	 * This method initializes jScrollPane2	
 	 * 	
 	 * @return javax.swing.JScrollPane	
 	 */
-	private JScrollPane getJScrollPane() {
-		if (jScrollPane == null) {
-			jScrollPane = new JScrollPane();
-			jScrollPane.add(new JPanel());
-			jScrollPane.add(new JPanel());
-			jScrollPane.add(new JPanel());
-			jScrollPane.add(new JPanel());
-			
+	private JScrollPane getJScrollPane2() {
+		if (jScrollPane2 == null) {
+			jScrollPane2 = new JScrollPane();
+			jScrollPane2.setViewportView(getJEditorPane1());
 		}
-		return jScrollPane;
+		return jScrollPane2;
+	}
+
+	/**
+	 * This method initializes jEditorPane1	
+	 * 	
+	 * @return javax.swing.JEditorPane	
+	 */
+	private JEditorPane getJEditorPane1() {
+		if (jEditorPane1 == null) {
+			jEditorPane1 = new JEditorPane();
+		}
+		return jEditorPane1;
+	}
+
+	/**
+	 * This method initializes jScrollPane3	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */
+	private JScrollPane getJScrollPane3() {
+		if (jScrollPane3 == null) {
+			jScrollPane3 = new JScrollPane();
+			jScrollPane3.setViewportView(getJEditorPane());
+		}
+		return jScrollPane3;
+	}
+
+	/**
+	 * This method initializes jEditorPane	
+	 * 	
+	 * @return javax.swing.JEditorPane	
+	 */
+	private JEditorPane getJEditorPane() {
+		if (jEditorPane == null) {
+			jEditorPane = new JEditorPane();
+		}
+		return jEditorPane;
+	}
+
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+		}
+		return jPanel;
+	}
+
+	/**
+	 * This method initializes jPanel1	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel1() {
+		if (jPanel1 == null) {
+			jPanel1 = new JPanel();
+			jPanel1.setLayout(new GridBagLayout());
+		}
+		return jPanel1;
+	}
+
+	/**
+	 * This method initializes jButton1	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setText("添加");
+			jButton1.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					Object object = HealthCheckResultInputFrame.this;
+					String[] fields = {"jEditorPane", "jEditorPane1", "jEditorPane2",
+							"jTextField", "jTextField1", "jTextField2", "jTextField3",
+							"jTextField4", "jTextField5", "jTextField6"};
+					for(String field : fields){
+						try {
+							Field localField = object.getClass().getDeclaredField(field);
+							System.out.println(localField.getType());
+							Method getTextMethod = localField.getType().getDeclaredMethod("getText", null);
+							Object value = getTextMethod.invoke(localField, null);
+							System.out.println("Value is: " + value);
+							
+						} catch (SecurityException e1) {
+							e1.printStackTrace();
+						} catch (NoSuchFieldException e1) {
+							e1.printStackTrace();
+						} catch (NoSuchMethodException e1) {
+							e1.printStackTrace();
+						} catch (IllegalArgumentException e1) {
+							e1.printStackTrace();
+						} catch (IllegalAccessException e1) {
+							e1.printStackTrace();
+						} catch (InvocationTargetException e1) {
+							e1.printStackTrace();
+//						} catch (InstantiationException e1) {
+//							e1.printStackTrace();
+						}
+					}
+				}
+				
+			});
+		}
+		return jButton1;
 	}
 
 	/**
