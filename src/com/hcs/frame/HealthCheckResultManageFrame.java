@@ -4,8 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -17,10 +18,10 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import com.hcs.util.BasicInfoOperator;
+import com.hcs.util.CheckResultOperator;
 import com.hcs.util.UIUtil;
 
-public class BasicInfoManageFrame extends JFrame {
+public class HealthCheckResultManageFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -60,11 +61,19 @@ public class BasicInfoManageFrame extends JFrame {
 					if(rowSel == -1){
 						JOptionPane.showMessageDialog(null, "请选中需要编辑的行！");
 					} else {
-						String[] value = data.get(rowSel);
-						BasicInfoInputFrame infoInputFrame = new BasicInfoInputFrame();
-						UIUtil.setInCenter(infoInputFrame);
-						infoInputFrame.initValue(value);
-						infoInputFrame.setVisible(true);
+						DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+						Object value = model.getValueAt(rowSel, 0);
+						System.out.println("Value is: " + value);
+						
+						String[] checkResult = CheckResultOperator.getCheckResult(value.toString());
+						for(String it : checkResult){
+							System.out.println(it);
+						}
+						
+						HealthCheckResultInputFrame checkResultFrame = new HealthCheckResultInputFrame();
+						UIUtil.setInCenter(checkResultFrame);
+						checkResultFrame.initValue(checkResult);
+						checkResultFrame.setVisible(true);
 					}
 				}
 				
@@ -92,6 +101,8 @@ public class BasicInfoManageFrame extends JFrame {
 						int yesOrNo = JOptionPane.showConfirmDialog(null, "确认要删除选定的行吗？", "删除确认", JOptionPane.YES_NO_OPTION);
 						if(yesOrNo == JOptionPane.YES_OPTION){
 							DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+							CheckResultOperator.deleteCheckResultRecord(model.getValueAt(rowSel, 0).toString());
+							CheckResultOperator.saveData();
 							model.removeRow(rowSel);
 						}
 					}
@@ -106,7 +117,7 @@ public class BasicInfoManageFrame extends JFrame {
 		return this.getJTable().getSelectedRow();
 	}
 	
-	private List<String[]> data = BasicInfoOperator.getHealthCardRecords();  //  @jve:decl-index=0:
+	private List<String[]> data = CheckResultOperator.getCheckResultRecords();  //  @jve:decl-index=0:
 
 	/**
 	 * This method initializes jTable	
@@ -115,10 +126,23 @@ public class BasicInfoManageFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			String[] columnNames = {"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告"};
-			String[][] initData = new String[data.size()][8];
+			String[] columnNames = {"体检结果ID", "一般情况", "生化室", "放射科", "心电图", "检验科", "其他"};
+			String[][] initData = new String[data.size()][7];
 			for(int i = 0; i < initData.length; i++){
-				initData[i] = data.get(i);
+				initData[i] = new String[7];
+				for(int j = 0; j <= initData[i].length; j++){
+					if(j == 6){
+						initData[i][j] = "无";
+					}
+					if(j > 5){
+						continue;
+					}
+					if(j >= 2){
+						initData[i][j] = data.get(i)[j + 6];
+					} else {
+						initData[i][j] = data.get(i)[j];
+					}
+				}
 			}
 			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
 			jTable = new JTable(model);
@@ -134,7 +158,7 @@ public class BasicInfoManageFrame extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				BasicInfoManageFrame thisClass = new BasicInfoManageFrame();
+				HealthCheckResultManageFrame thisClass = new HealthCheckResultManageFrame();
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				thisClass.setVisible(true);
 			}
@@ -144,7 +168,7 @@ public class BasicInfoManageFrame extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public BasicInfoManageFrame() {
+	public HealthCheckResultManageFrame() {
 		super();
 		initialize();
 	}
@@ -155,10 +179,10 @@ public class BasicInfoManageFrame extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(800, 340);
+		this.setSize(752, 340);
 		this.setJMenuBar(getJJMenuBar());
 		this.setContentPane(getJContentPane());
-		this.setTitle("健康证资料管理");
+		this.setTitle("体检结果管理界面");
 	}
 
 	/**

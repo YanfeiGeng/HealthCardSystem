@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -25,6 +26,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+
+import com.hcs.bean.CheckResultBean;
+import com.hcs.util.BasicInfoOperator;
+import com.hcs.util.CheckResultOperator;
+import com.hcs.util.StringUtil;
 
 public class HealthCheckResultInputFrame extends JFrame {
 
@@ -76,6 +82,53 @@ public class HealthCheckResultInputFrame extends JFrame {
 			jTabbedPane.addTab("检验科结果", null, getJianyankePanel(), null);
 		}
 		return jTabbedPane;
+	}
+	
+	private boolean isEdit = false;
+	
+	private String checkResultID = "";  //  @jve:decl-index=0:
+	
+	public void initValue(String[] values){
+		isEdit = true;
+		getJButton1().setText("编辑");
+		Object checkResult = HealthCheckResultInputFrame.this;
+		String[] fields = {
+				"id",
+				"jEditorPane",
+				"jTextField",
+				"jTextField1", 
+				"jTextField2",
+				"jTextField3",
+				"jTextField4",
+				"jTextField5",
+				"jTextField6",
+				"jEditorPane1",
+				"jEditorPane2",
+				"jEditorPane3"
+			};
+		checkResultID = values[0];
+		for(int pos = 1; pos < fields.length; pos++){
+			try {
+				Field inputItem = checkResult.getClass().getDeclaredField(fields[pos]);
+				inputItem.setAccessible(true);
+				Object inputInstance = inputItem.get(checkResult);
+				Method setMethod = inputInstance.getClass().getMethod("setText", new Class[]{String.class});
+				setMethod.invoke(inputInstance, values[pos]);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	}
 
 	/**
@@ -507,16 +560,45 @@ public class HealthCheckResultInputFrame extends JFrame {
 
 				public void actionPerformed(ActionEvent e) {
 					Object object = HealthCheckResultInputFrame.this;
-					String[] fields = {"jEditorPane", "jEditorPane1", "jEditorPane2",
-							"jTextField", "jTextField1", "jTextField2", "jTextField3",
-							"jTextField4", "jTextField5", "jTextField6"};
-					for(String field : fields){
+					String[][] fields = {
+								{"jEditorPane","setGeneralInfo","","一般情况检查结果"},
+								{"jTextField","setShParam1","","总胆红素"},
+								{"jTextField1","setShParam2","","间接胆红素"}, 
+								{"jTextField2","setShParam3","","白球比值"},
+								{"jTextField3","setShParam4","","尿酸"},
+								{"jTextField4","setShParam5","","高密度脂蛋白胆固醇(HDL-CH)"},
+								{"jTextField5","setShParam6","","低密度脂蛋白胆固醇(LDL-CH)"},
+								{"jTextField6","setShParam7","","肌酸磷酸激酶"},
+								{"jEditorPane1","setRayResult","","放射科检查结果"},
+								{"jEditorPane2","setHeartResult","","心电图检查结果"},
+								{"jEditorPane3","setCheckResult","","检验科检查结果"}
+							};
+					CheckResultBean checkResult = new CheckResultBean();
+					checkResult.setResultID(String.valueOf(System.currentTimeMillis()));
+					for(String[] field : fields){
 						try {
-							Field localField = object.getClass().getDeclaredField(field);
-							System.out.println(localField.getType());
-							Method getTextMethod = localField.getType().getDeclaredMethod("getText", null);
-							Object value = getTextMethod.invoke(localField, null);
-							System.out.println("Value is: " + value);
+							
+							//Get value.
+							Field localField = object.getClass().getDeclaredField(field[0]);
+							localField.setAccessible(true);
+//							System.out.println(localField.get(object).getClass());
+							Object fieldIns = localField.get(object);
+							Method getTextMethod = fieldIns.getClass().getMethod("getText", null);
+							getTextMethod.setAccessible(true);
+							Object value = getTextMethod.invoke(fieldIns, null);
+							
+							if(value == null || "".equals(value)){
+								JOptionPane.showMessageDialog(null, field[3] + " 不能为空！");
+								return;
+							}
+							
+							//Set value for the inputs
+							field[2] = StringUtil.filterGamaAndEnter(value.toString());
+//							System.out.println("Value is: " + value);
+							
+							//Set Value
+//							Method setValue = checkResult.getClass().getDeclaredMethod(field[1], new Class[]{String.class});
+//							setValue.invoke(checkResult, value);
 							
 						} catch (SecurityException e1) {
 							e1.printStackTrace();
@@ -530,12 +612,32 @@ public class HealthCheckResultInputFrame extends JFrame {
 							e1.printStackTrace();
 						} catch (InvocationTargetException e1) {
 							e1.printStackTrace();
-//						} catch (InstantiationException e1) {
-//							e1.printStackTrace();
 						}
 					}
+					String[] value = {
+							checkResult.getResultID(),
+							fields[0][2], 
+							fields[1][2],
+							fields[2][2], 
+							fields[3][2], 
+							fields[4][2], 
+							fields[5][2], 
+							fields[6][2], 
+							fields[7][2], 
+							fields[8][2], 
+							fields[9][2], 
+							fields[10][2], 
+							};
+					if(HealthCheckResultInputFrame.this.isEdit){
+						CheckResultOperator.updateCheckResultRecord(HealthCheckResultInputFrame.this.checkResultID, value);
+						JOptionPane.showMessageDialog(null, "体检记录修改添加！");
+					} else {
+						CheckResultOperator.addCheckResultRecord(value);
+						JOptionPane.showMessageDialog(null, "体检记录成功添加！");
+					}
+					CheckResultOperator.saveData();
+					HealthCheckResultInputFrame.this.dispose();
 				}
-				
 			});
 		}
 		return jButton1;

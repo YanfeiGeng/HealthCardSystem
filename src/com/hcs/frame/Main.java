@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
@@ -24,7 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 
-import com.hcs.util.DataOperator;
+import com.hcs.util.BasicInfoOperator;
 import com.hcs.util.UIUtil;
 
 public class Main extends JFrame {
@@ -166,6 +165,15 @@ public class Main extends JFrame {
 		if (healtyCheckInput == null) {
 			healtyCheckInput = new JMenuItem();
 			healtyCheckInput.setText("体检结果录入");
+			healtyCheckInput.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					HealthCheckResultInputFrame checkResultInput = new HealthCheckResultInputFrame();
+					UIUtil.setInCenter(checkResultInput);
+					checkResultInput.setVisible(true);
+				}
+				
+			});
 		}
 		return healtyCheckInput;
 	}
@@ -179,6 +187,15 @@ public class Main extends JFrame {
 		if (healtyCardPrintFeature == null) {
 			healtyCardPrintFeature = new JMenuItem();
 			healtyCardPrintFeature.setText("健康证打印");
+			healtyCardPrintFeature.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					PrintBasicInfoFrame printFrame = new PrintBasicInfoFrame();
+					UIUtil.setInCenter(printFrame);
+					printFrame.setVisible(true);
+				}
+				
+			});
 		}
 		return healtyCardPrintFeature;
 	}
@@ -256,6 +273,15 @@ public class Main extends JFrame {
 		if (checkManagent == null) {
 			checkManagent = new JMenuItem();
 			checkManagent.setText("体检结果管理");
+			checkManagent.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					HealthCheckResultManageFrame checkResult = new HealthCheckResultManageFrame();
+					UIUtil.setInCenter(checkResult);
+					checkResult.setVisible(true);
+				}
+				
+			});
 		}
 		return checkManagent;
 	}
@@ -280,7 +306,7 @@ public class Main extends JFrame {
 				thisClass.addWindowListener(new WindowAdapter(){
 
 					public void windowClosing(WindowEvent e) {
-						DataOperator.saveData();
+						BasicInfoOperator.saveData();
 					}
 					
 				});

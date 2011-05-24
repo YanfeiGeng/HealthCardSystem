@@ -22,7 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.hcs.util.DataOperator;
+import com.hcs.util.BasicInfoOperator;
 import com.hcs.util.UIUtil;
 
 public class BasicInfoInputFrame extends JFrame {
@@ -391,7 +391,7 @@ public class BasicInfoInputFrame extends JFrame {
 						if(BasicInfoInputFrame.this.isEdit()){
 							
 						} else {
-							DataOperator.addHealthCardRecord(record);
+							BasicInfoOperator.addHealthCardRecord(record);
 							JOptionPane.showMessageDialog(null, name + "\n"
 									+ sex + "\n"
 									+ age + "\n"
