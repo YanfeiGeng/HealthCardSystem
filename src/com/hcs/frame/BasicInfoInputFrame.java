@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -22,7 +23,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.hcs.util.BasicInfoOperator;
+import com.hcs.bean.BasicInformation;
+import com.hcs.dao.BasicInfoDao;
 import com.hcs.util.UIUtil;
 
 public class BasicInfoInputFrame extends JFrame {
@@ -357,6 +359,7 @@ public class BasicInfoInputFrame extends JFrame {
 	private JButton cancelButton = new JButton();
 	private JLabel jLabel2 = null;
 	private BasicInfoInputFrame currentDialog = this;
+	private BasicInfoDao basicInfoDao = new BasicInfoDao();
 	
 	/**
 	 * This method initializes jPanel2	
@@ -387,11 +390,17 @@ public class BasicInfoInputFrame extends JFrame {
 							UIUtil.isEmpty("¼®¹á", birthAddress) &&
 							UIUtil.isEmpty("ÏÖ×¡Ö·", currentAddress)){
 						String id = jLabel2.getText().trim();
-						String[] record = {id, name, sex, age, birth, birthAddress, currentAddress, "initReport.xls"};
+//						String[] record = {id, name, sex, age, birth, birthAddress, currentAddress, "initReport.xls"};
+						
+						Date birthday = Date.valueOf(birthAddress);
+						BasicInformation basicInfo = new BasicInformation(name, sex, age, birthday, birthAddress, currentAddress, "initReport.xls");
 						if(BasicInfoInputFrame.this.isEdit()){
 							
 						} else {
-							BasicInfoOperator.addHealthCardRecord(record);
+							//Original usage
+//							BasicInfoOperator.addHealthCardRecord(record);
+							
+							basicInfoDao.addHealthCardRecord(basicInfo);
 							JOptionPane.showMessageDialog(null, name + "\n"
 									+ sex + "\n"
 									+ age + "\n"

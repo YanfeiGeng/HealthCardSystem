@@ -4,6 +4,10 @@ import java.sql.Date;
 
 public class BasicInformation {
 
+	public BasicInformation() {
+		super();
+	}
+
 	private String id;
 
 	public String getId() {
@@ -24,6 +28,18 @@ public class BasicInformation {
 
 	public String getSex() {
 		return sex;
+	}
+
+	public BasicInformation(String name, String sex, String age, Date birthday,
+			String address, String currentAddress, String checkReport) {
+		super();
+		this.name = name;
+		this.sex = sex;
+		this.age = age;
+		this.birthday = birthday;
+		this.address = address;
+		this.currentAddress = currentAddress;
+		this.checkReport = checkReport;
 	}
 
 	public void setSex(String sex) {
