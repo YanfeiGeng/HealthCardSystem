@@ -238,6 +238,15 @@ public class Main extends JFrame {
 			authManagent = new JMenuItem();
 			authManagent.setToolTipText("");
 			authManagent.setText("管理系统权限");
+			authManagent.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					RoleManageFrame roleManage = new RoleManageFrame();
+					UIUtil.setInCenter(roleManage);
+					roleManage.setVisible(true);
+				}
+				
+			});
 		}
 		return authManagent;
 	}
