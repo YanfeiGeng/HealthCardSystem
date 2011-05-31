@@ -168,9 +168,9 @@ public class Main extends JFrame {
 			healtyCheckInput.addActionListener(new ActionListener(){
 
 				public void actionPerformed(ActionEvent e) {
-					HealthCheckResultInputFrame checkResultInput = new HealthCheckResultInputFrame();
-					UIUtil.setInCenter(checkResultInput);
-					checkResultInput.setVisible(true);
+					SelectBasicInfoForCheckResult sbifr = new SelectBasicInfoForCheckResult();
+					UIUtil.setInCenter(sbifr);
+					sbifr.setVisible(true);
 				}
 				
 			});

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -17,6 +16,8 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import com.hcs.bean.BasicInformation;
+import com.hcs.dao.BasicInfoDao;
 import com.hcs.util.BasicInfoOperator;
 import com.hcs.util.UIUtil;
 
@@ -28,6 +29,7 @@ public class BasicInfoManageFrame extends JFrame {
 	private JMenu jMenu = null;
 	private JMenu jMenu1 = null;
 	private JTable jTable = null;
+	private BasicInfoDao basicDao = new BasicInfoDao();
 
 	/**
 	 * This method initializes jJMenuBar	
@@ -60,10 +62,15 @@ public class BasicInfoManageFrame extends JFrame {
 					if(rowSel == -1){
 						JOptionPane.showMessageDialog(null, "请选中需要编辑的行！");
 					} else {
-						String[] value = data.get(rowSel);
+						DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+						Object id = model.getValueAt(rowSel, 0);
+						BasicInformation basicInfo = basicDao.getHealthCardRecordById(id.toString());
+						
+//						Original Usage
+//						String[] value = data.get(rowSel);
 						BasicInfoInputFrame infoInputFrame = new BasicInfoInputFrame();
 						UIUtil.setInCenter(infoInputFrame);
-						infoInputFrame.initValue(value);
+						infoInputFrame.initValue(basicInfo);
 						infoInputFrame.setVisible(true);
 					}
 				}
@@ -92,6 +99,8 @@ public class BasicInfoManageFrame extends JFrame {
 						int yesOrNo = JOptionPane.showConfirmDialog(null, "确认要删除选定的行吗？", "删除确认", JOptionPane.YES_NO_OPTION);
 						if(yesOrNo == JOptionPane.YES_OPTION){
 							DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+							Object id = model.getValueAt(rowSel, 0);
+							basicDao.deleteHealthCardRecord(id.toString());
 							model.removeRow(rowSel);
 						}
 					}
@@ -115,10 +124,25 @@ public class BasicInfoManageFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
+			List<BasicInformation> basicRecords = basicDao.getHealthCardRecords();
 			String[] columnNames = {"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告"};
-			String[][] initData = new String[data.size()][8];
-			for(int i = 0; i < initData.length; i++){
-				initData[i] = data.get(i);
+			String[][] initData = new String[basicRecords.size()][8];
+			
+			//Original Usage
+//			for(int i = 0; i < initData.length; i++){
+//				initData[i] = data.get(i);
+//			}
+			
+			for(int i = 0; i < basicRecords.size(); i++){
+				BasicInformation info = basicRecords.get(i);
+				initData[i][0] = info.getId();
+				initData[i][1] = info.getName();
+				initData[i][2] = info.getSex();
+				initData[i][3] = info.getAge();
+				initData[i][4] = info.getBirthday().toString();
+				initData[i][5] = info.getAddress();
+				initData[i][6] = info.getCurrentAddress();
+				initData[i][7] = info.getCheckReport();
 			}
 			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
 			jTable = new JTable(model);

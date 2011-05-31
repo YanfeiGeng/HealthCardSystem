@@ -31,14 +31,14 @@ public class BasicInfoDao {
 			result = state.executeQuery(getListSQL);
 			while(result.next()){
 				BasicInformation basicInfo = new BasicInformation();
-				int resultId = result.getInt(0);
-				String name = result.getString(1);
-				String sex = result.getString(2);
-				String age = result.getString(3);
-				Date birthday = result.getDate(4);
-				String address = result.getString(5);
-				String currentaddress = result.getString(6);
-				String checkreport = result.getString(7);
+				int resultId = result.getInt(1);
+				String name = result.getString(2);
+				String sex = result.getString(3);
+				String age = result.getString(4);
+				Date birthday = result.getDate(5);
+				String address = result.getString(6);
+				String currentaddress = result.getString(7);
+				String checkreport = result.getString(8);
 				basicInfo.setId(String.valueOf(resultId));
 				basicInfo.setName(name);
 				basicInfo.setSex(sex);
@@ -79,17 +79,17 @@ public class BasicInfoDao {
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(getHealthSQL);
-			state.setInt(0, Integer.parseInt(id));
+			state.setInt(1, Integer.parseInt(id));
 			result = state.executeQuery();
 			while(result.next()){
-				int resultId = result.getInt(0);
-				String name = result.getString(1);
-				String sex = result.getString(2);
-				String age = result.getString(3);
-				Date birthday = result.getDate(4);
-				String address = result.getString(5);
-				String currentaddress = result.getString(6);
-				String checkreport = result.getString(7);
+				int resultId = result.getInt(1);
+				String name = result.getString(2);
+				String sex = result.getString(3);
+				String age = result.getString(4);
+				Date birthday = result.getDate(5);
+				String address = result.getString(6);
+				String currentaddress = result.getString(7);
+				String checkreport = result.getString(8);
 				basicInfo.setId(String.valueOf(resultId));
 				basicInfo.setName(name);
 				basicInfo.setSex(sex);
@@ -128,13 +128,13 @@ public class BasicInfoDao {
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(addInfoSQL);
-			state.setString(0, basicInfo.getName());
-			state.setString(1, basicInfo.getSex());
-			state.setString(2, basicInfo.getAge());
-			state.setDate(3, basicInfo.getBirthday());
-			state.setString(4, basicInfo.getAddress());
-			state.setString(5, basicInfo.getCurrentAddress());
-			state.setString(6, basicInfo.getCheckReport());
+			state.setString(1, basicInfo.getName());
+			state.setString(2, basicInfo.getSex());
+			state.setString(3, basicInfo.getAge());
+			state.setDate(4, basicInfo.getBirthday());
+			state.setString(5, basicInfo.getAddress());
+			state.setString(6, basicInfo.getCurrentAddress());
+			state.setString(7, basicInfo.getCheckReport());
 			state.execute();
 			return true;
 		} catch (SQLException e) {
@@ -164,7 +164,7 @@ public class BasicInfoDao {
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(delInfoSQL);
-			state.setString(0, id);
+			state.setString(1, id);
 			state.execute();
 			return true;
 		} catch (SQLException e) {
@@ -194,14 +194,14 @@ public class BasicInfoDao {
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(updateInfoSQL);
-			state.setString(0, basicInfo.getName());
-			state.setString(1, basicInfo.getSex());
-			state.setString(2, basicInfo.getAge());
-			state.setDate(3, basicInfo.getBirthday());
-			state.setString(4, basicInfo.getAddress());
-			state.setString(5, basicInfo.getCurrentAddress());
-			state.setString(6, basicInfo.getCheckReport());
-			state.setInt(7, Integer.parseInt(basicInfo.getId()));
+			state.setString(1, basicInfo.getName());
+			state.setString(2, basicInfo.getSex());
+			state.setString(3, basicInfo.getAge());
+			state.setDate(4, basicInfo.getBirthday());
+			state.setString(5, basicInfo.getAddress());
+			state.setString(6, basicInfo.getCurrentAddress());
+			state.setString(7, basicInfo.getCheckReport());
+			state.setInt(8, Integer.parseInt(basicInfo.getId()));
 			state.execute();
 			return true;
 		} catch (SQLException e) {

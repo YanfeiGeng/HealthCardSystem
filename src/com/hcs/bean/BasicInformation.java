@@ -74,6 +74,11 @@ public class BasicInformation {
 		return currentAddress;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	public void setCurrentAddress(String currentAddress) {
 		this.currentAddress = currentAddress;
 	}

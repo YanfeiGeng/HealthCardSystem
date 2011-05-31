@@ -51,7 +51,8 @@ public class BasicInfoInputFrame extends JFrame {
 	private JTextField jTextField6 = null;
 	private JButton jButton = null;
 	private JPanel jPanel2 = null;
-	private ButtonGroup group = new ButtonGroup();  //  @jve:decl-index=0:
+	private ButtonGroup group = new ButtonGroup();
+	private String basicInfoId = ""; 
 	
 	private boolean isEdit = false;
 	public boolean isEdit() {
@@ -71,17 +72,19 @@ public class BasicInfoInputFrame extends JFrame {
 	}
 	
 	//{"23123168", "张三", "男", "21", "1990-10-13", "中国河北秦皇岛", "江苏扬州", "Report.xls"},
-	public void initValue(String[] initValue){
-		jTextField1.setText(initValue[1]);
-		if("男".equals(initValue[2])){
+	public void initValue(BasicInformation basicInfo){
+		setEdit(true);
+		basicInfoId = basicInfo.getId();
+		jTextField1.setText(basicInfo.getName());
+		if("男".equals(basicInfo.getSex())){
 			getJRadioButton().setSelected(true);
 		} else {
 			getJRadioButton1().setSelected(true);
 		}
-		jTextField3.setText(initValue[3]);
-		jTextField4.setText(initValue[4]);
-		jTextField5.setText(initValue[5]);
-		jTextField6.setText(initValue[6]);
+		jTextField3.setText(basicInfo.getAge());
+		jTextField4.setText(basicInfo.getBirthday().toString());
+		jTextField5.setText(basicInfo.getAddress());
+		jTextField6.setText(basicInfo.getCurrentAddress());
 		
 //		String age = jTextField3.getText().trim();
 //		String birth = jTextField4.getText().trim();
@@ -389,13 +392,14 @@ public class BasicInfoInputFrame extends JFrame {
 							UIUtil.isEmpty("生日", birth) &&
 							UIUtil.isEmpty("籍贯", birthAddress) &&
 							UIUtil.isEmpty("现住址", currentAddress)){
-						String id = jLabel2.getText().trim();
+//						String id = jLabel2.getText().trim();
 //						String[] record = {id, name, sex, age, birth, birthAddress, currentAddress, "initReport.xls"};
-						
-						Date birthday = Date.valueOf(birthAddress);
+						System.out.println(birth);
+						Date birthday = Date.valueOf(birth);
 						BasicInformation basicInfo = new BasicInformation(name, sex, age, birthday, birthAddress, currentAddress, "initReport.xls");
+						basicInfo.setId(basicInfoId);
 						if(BasicInfoInputFrame.this.isEdit()){
-							
+							basicInfoDao.updateHealthCardRecord(basicInfo);
 						} else {
 							//Original usage
 //							BasicInfoOperator.addHealthCardRecord(record);

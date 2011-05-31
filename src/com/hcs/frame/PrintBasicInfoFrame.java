@@ -30,6 +30,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import com.hcs.bean.BasicInformation;
+import com.hcs.dao.BasicInfoDao;
 import com.hcs.util.BasicInfoOperator;
 import com.hcs.util.UIUtil;
 
@@ -41,6 +43,7 @@ public class PrintBasicInfoFrame extends JFrame {
 	private JMenu jMenu = null;
 	private JMenu jMenu1 = null;
 	private JTable jTable = null;
+	private BasicInfoDao basicDao = new BasicInfoDao();
 
 	/**
 	 * This method initializes jJMenuBar	
@@ -73,13 +76,33 @@ public class PrintBasicInfoFrame extends JFrame {
 					if(rowSel == -1){
 						JOptionPane.showMessageDialog(null, "请选中需要打印的健康证！");
 					} else {
-						String[] value = data.get(rowSel);
+						DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+						Object id = model.getValueAt(rowSel, 0);
+						BasicInformation basicInfo = basicDao.getHealthCardRecordById(id.toString());
 						StringBuffer content = new StringBuffer();
-						for(int i = 0; i < value.length; i++){
-							content.append(columnNames[i] + ":   ");
-							content.append(value[i]);
-							content.append("\r\n");
-						}
+//						for(int i = 0; i < value.length; i++){
+//							content.append();
+//							content.append(value[i]);
+//							content.append("\r\n");
+//						}
+//						"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告
+						content.append(columnNames[0] + ":   ")
+							.append(basicInfo.getId() + "\n\r")
+							.append(columnNames[1] + ":   ")
+							.append(basicInfo.getName() + "\n\r")
+							.append(columnNames[2] + ":   ")
+							.append(basicInfo.getSex() + "\n\r")
+							.append(columnNames[3] + ":   ")
+							.append(basicInfo.getAge() + "\n\r")
+							.append(columnNames[4] + ":   ")
+							.append(basicInfo.getBirthday().toString() + "\n\r")
+							.append(columnNames[5] + ":   ")
+							.append(basicInfo.getAddress() + "\n\r")
+							.append(columnNames[6] + ":   ")
+							.append(basicInfo.getCurrentAddress() + "\n\r")
+							.append(columnNames[6] + ":   ")
+							.append(basicInfo.getCheckReport());
+						
 						PrintPreview preview = new PrintPreview();
 						preview.init(content.toString());
 						preview.setSize(500, 400);
@@ -172,10 +195,24 @@ public class PrintBasicInfoFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			String[][] initData = new String[data.size()][8];
-			for(int i = 0; i < initData.length; i++){
-				initData[i] = data.get(i);
+			List<BasicInformation> basicRecords = basicDao.getHealthCardRecords();
+			String[][] initData = new String[basicRecords.size()][8];
+			
+			for(int i = 0; i < basicRecords.size(); i++){
+				BasicInformation info = basicRecords.get(i);
+				initData[i][0] = info.getId();
+				initData[i][1] = info.getName();
+				initData[i][2] = info.getSex();
+				initData[i][3] = info.getAge();
+				initData[i][4] = info.getBirthday().toString();
+				initData[i][5] = info.getAddress();
+				initData[i][6] = info.getCurrentAddress();
+				initData[i][7] = info.getCheckReport();
 			}
+			
+//			for(int i = 0; i < initData.length; i++){
+//				initData[i] = data.get(i);
+//			}
 			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
 			jTable = new MyTable(model);
 			jTable.setPreferredScrollableViewportSize(new Dimension(500, 70));

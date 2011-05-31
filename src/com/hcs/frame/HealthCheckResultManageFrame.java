@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -18,6 +16,8 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import com.hcs.bean.CheckResultBean;
+import com.hcs.dao.HealthCheckResultDao;
 import com.hcs.util.CheckResultOperator;
 import com.hcs.util.UIUtil;
 
@@ -29,6 +29,7 @@ public class HealthCheckResultManageFrame extends JFrame {
 	private JMenu jMenu = null;
 	private JMenu jMenu1 = null;
 	private JTable jTable = null;
+	private HealthCheckResultDao checkDao = new HealthCheckResultDao();  //  @jve:decl-index=0:
 
 	/**
 	 * This method initializes jJMenuBar	
@@ -65,15 +66,16 @@ public class HealthCheckResultManageFrame extends JFrame {
 						Object value = model.getValueAt(rowSel, 0);
 						System.out.println("Value is: " + value);
 						
-						String[] checkResult = CheckResultOperator.getCheckResult(value.toString());
-						for(String it : checkResult){
-							System.out.println(it);
-						}
+						//Original Usage
+//						String[] checkResult = CheckResultOperator.getCheckResult(value.toString());
+//						for(String it : checkResult){
+//							System.out.println(it);
+//						}
+						CheckResultBean checkResult = checkDao.getCheckResult(value.toString());
 						
-						HealthCheckResultInputFrame checkResultFrame = new HealthCheckResultInputFrame();
-						UIUtil.setInCenter(checkResultFrame);
-						checkResultFrame.initValue(checkResult);
-						checkResultFrame.setVisible(true);
+						SelectBasicInfoForCheckResult sbifr = new SelectBasicInfoForCheckResult(checkResult);
+						UIUtil.setInCenter(sbifr);
+						sbifr.setVisible(true);
 					}
 				}
 				
@@ -117,7 +119,8 @@ public class HealthCheckResultManageFrame extends JFrame {
 		return this.getJTable().getSelectedRow();
 	}
 	
-	private List<String[]> data = CheckResultOperator.getCheckResultRecords();  //  @jve:decl-index=0:
+	//Original Usage
+//	private List<String[]> data = CheckResultOperator.getCheckResultRecords();  
 
 	/**
 	 * This method initializes jTable	
@@ -127,23 +130,36 @@ public class HealthCheckResultManageFrame extends JFrame {
 	private JTable getJTable() {
 		if (jTable == null) {
 			String[] columnNames = {"体检结果ID", "一般情况", "生化室", "放射科", "心电图", "检验科", "其他"};
-			String[][] initData = new String[data.size()][7];
-			for(int i = 0; i < initData.length; i++){
-				initData[i] = new String[7];
-				for(int j = 0; j <= initData[i].length; j++){
-					if(j == 6){
-						initData[i][j] = "无";
-					}
-					if(j > 5){
-						continue;
-					}
-					if(j >= 2){
-						initData[i][j] = data.get(i)[j + 6];
-					} else {
-						initData[i][j] = data.get(i)[j];
-					}
-				}
+			List<CheckResultBean> resultList = checkDao.getCheckResultRecords();
+			String[][] initData = new String[resultList.size()][7];
+			for(int i = 0; i < resultList.size(); i++){
+				CheckResultBean result = resultList.get(i);
+				initData[i][0] = result.getResultID(); 
+				initData[i][1] = result.getGeneralInfo();
+				initData[i][2] = result.getShParam1();
+				initData[i][3] = result.getRayResult();
+				initData[i][4] = result.getHeartResult();
+				initData[i][5] = result.getCheckResult();
+				initData[i][6] = "暂无";
 			}
+			
+			//Original Usage
+//			for(int i = 0; i < initData.length; i++){
+//				initData[i] = new String[7];
+//				for(int j = 0; j <= initData[i].length; j++){
+//					if(j == 6){
+//						initData[i][j] = "无";
+//					}
+//					if(j > 5){
+//						continue;
+//					}
+//					if(j >= 2){
+//						initData[i][j] = data.get(i)[j + 6];
+//					} else {
+//						initData[i][j] = data.get(i)[j];
+//					}
+//				}
+//			}
 			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
 			jTable = new JTable(model);
 			jTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -179,7 +195,7 @@ public class HealthCheckResultManageFrame extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(752, 340);
+		this.setSize(800, 340);
 		this.setJMenuBar(getJJMenuBar());
 		this.setContentPane(getJContentPane());
 		this.setTitle("体检结果管理界面");

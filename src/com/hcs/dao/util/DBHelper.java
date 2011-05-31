@@ -31,7 +31,7 @@ public class DBHelper {
 	public static Connection getConnection() throws Exception{
 		Connection conn = null;
 		Class.forName("com.mysql.jdbc.Driver");
-		String URL = "jdbc:mysql://" + dbValue.get(Configurator.DB_SERVER) + "/" + dbValue.get(Configurator.DB_INSTANCE);
+		String URL = "jdbc:mysql://" + dbValue.get(Configurator.DB_SERVER) + "/" + dbValue.get(Configurator.DB_INSTANCE) + "?useUnicode=true&characterEncoding=utf-8";
 		conn = DriverManager.getConnection(URL, dbValue.get(Configurator.DB_USERNAME), dbValue.get(Configurator.DB_PASSWORD));
 		return conn;
 	}

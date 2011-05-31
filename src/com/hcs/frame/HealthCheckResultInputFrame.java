@@ -3,6 +3,7 @@ package com.hcs.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,10 +28,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
+import com.hcs.bean.BasicInformation;
 import com.hcs.bean.CheckResultBean;
-import com.hcs.util.BasicInfoOperator;
-import com.hcs.util.CheckResultOperator;
-import com.hcs.util.StringUtil;
+import com.hcs.dao.HealthCheckResultDao;
 
 public class HealthCheckResultInputFrame extends JFrame {
 
@@ -67,6 +67,16 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JPanel jPanel = null;
 	private JPanel jPanel1 = null;
 	private JButton jButton1 = null;
+	private HealthCheckResultDao resultDao = new HealthCheckResultDao();  //  @jve:decl-index=0:
+	private BasicInformation referedBasicInfo = null;  //  @jve:decl-index=0:
+	public BasicInformation getReferedBasicInfo() {
+		return referedBasicInfo;
+	}
+
+	public void setReferedBasicInfo(BasicInformation referedBasicInfo) {
+		this.referedBasicInfo = referedBasicInfo;
+	}
+
 	/**
 	 * This method initializes jTabbedPane	
 	 * 	
@@ -88,47 +98,59 @@ public class HealthCheckResultInputFrame extends JFrame {
 	
 	private String checkResultID = "";  //  @jve:decl-index=0:
 	
-	public void initValue(String[] values){
+	public void initValue(CheckResultBean checkResultBean){
 		isEdit = true;
 		getJButton1().setText("编辑");
-		Object checkResult = HealthCheckResultInputFrame.this;
-		String[] fields = {
-				"id",
-				"jEditorPane",
-				"jTextField",
-				"jTextField1", 
-				"jTextField2",
-				"jTextField3",
-				"jTextField4",
-				"jTextField5",
-				"jTextField6",
-				"jEditorPane1",
-				"jEditorPane2",
-				"jEditorPane3"
-			};
-		checkResultID = values[0];
-		for(int pos = 1; pos < fields.length; pos++){
-			try {
-				Field inputItem = checkResult.getClass().getDeclaredField(fields[pos]);
-				inputItem.setAccessible(true);
-				Object inputInstance = inputItem.get(checkResult);
-				Method setMethod = inputInstance.getClass().getMethod("setText", new Class[]{String.class});
-				setMethod.invoke(inputInstance, values[pos]);
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			
-		}
+
+		checkResultID = checkResultBean.getResultID();
+		jEditorPane.setText(checkResultBean.getGeneralInfo());
+		jTextField.setText(checkResultBean.getShParam1());
+		jTextField1.setText(checkResultBean.getShParam2());
+		jTextField2.setText(checkResultBean.getShParam3());
+		jTextField3.setText(checkResultBean.getShParam4());
+		jTextField4.setText(checkResultBean.getShParam5());
+		jTextField5.setText(checkResultBean.getShParam6());
+		jTextField6.setText(checkResultBean.getShParam7());
+		jEditorPane1.setText(checkResultBean.getRayResult());
+		jEditorPane2.setText(checkResultBean.getHeartResult());
+		jEditorPane3.setText(checkResultBean.getCheckResult());
+//		Object checkResult = HealthCheckResultInputFrame.this;
+//		String[] fields = {
+//				"id",
+//				"jEditorPane",
+//				"jTextField",
+//				"jTextField1", 
+//				"jTextField2",
+//				"jTextField3",
+//				"jTextField4",
+//				"jTextField5",
+//				"jTextField6",
+//				"jEditorPane1",
+//				"jEditorPane2",
+//				"jEditorPane3"
+//			};
+//		checkResultID = values[0];
+//		for(int pos = 1; pos < fields.length; pos++){
+//			try {
+//				Field inputItem = checkResult.getClass().getDeclaredField(fields[pos]);
+//				inputItem.setAccessible(true);
+//				Object inputInstance = inputItem.get(checkResult);
+//				Method setMethod = inputInstance.getClass().getMethod("setText", new Class[]{String.class});
+//				setMethod.invoke(inputInstance, values[pos]);
+//			} catch (SecurityException e) {
+//				e.printStackTrace();
+//			} catch (NoSuchFieldException e) {
+//				e.printStackTrace();
+//			} catch (IllegalArgumentException e) {
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				e.printStackTrace();
+//			} catch (NoSuchMethodException e) {
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	/**
@@ -160,7 +182,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 			general.add(getJScrollPane3(), gridBagConstraints18);
 			general.add(getJPanel(), gridBagConstraints31);
 			general.add(getJPanel1(), gridBagConstraints51);
-			general.add(getJButton1(), gridBagConstraints61);
+//			general.add(getJButton1(), gridBagConstraints61);
 		}
 		return general;
 	}
@@ -556,6 +578,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 		if (jButton1 == null) {
 			jButton1 = new JButton();
 			jButton1.setText("添加");
+			jButton1.setPreferredSize(new Dimension(100, 22));
 			jButton1.addActionListener(new ActionListener(){
 
 				public void actionPerformed(ActionEvent e) {
@@ -593,7 +616,8 @@ public class HealthCheckResultInputFrame extends JFrame {
 							}
 							
 							//Set value for the inputs
-							field[2] = StringUtil.filterGamaAndEnter(value.toString());
+//							field[2] = StringUtil.filterGamaAndEnter(value.toString());
+							field[2] = value.toString();
 //							System.out.println("Value is: " + value);
 							
 							//Set Value
@@ -614,9 +638,22 @@ public class HealthCheckResultInputFrame extends JFrame {
 							e1.printStackTrace();
 						}
 					}
-					String[] value = {
-							checkResult.getResultID(),
-							fields[0][2], 
+					
+//					String[] value = {
+//							checkResult.getResultID(),
+//							fields[0][2], 
+//							fields[1][2],
+//							fields[2][2], 
+//							fields[3][2], 
+//							fields[4][2], 
+//							fields[5][2], 
+//							fields[6][2], 
+//							fields[7][2], 
+//							fields[8][2], 
+//							fields[9][2], 
+//							fields[10][2], 
+//							};
+					CheckResultBean healthCheckResult = new CheckResultBean(fields[0][2], 
 							fields[1][2],
 							fields[2][2], 
 							fields[3][2], 
@@ -626,16 +663,22 @@ public class HealthCheckResultInputFrame extends JFrame {
 							fields[7][2], 
 							fields[8][2], 
 							fields[9][2], 
-							fields[10][2], 
-							};
+							fields[10][2]);
 					if(HealthCheckResultInputFrame.this.isEdit){
-						CheckResultOperator.updateCheckResultRecord(HealthCheckResultInputFrame.this.checkResultID, value);
-						JOptionPane.showMessageDialog(null, "体检记录修改添加！");
+						//Original Usage
+//						CheckResultOperator.updateCheckResultRecord(HealthCheckResultInputFrame.this.checkResultID, value);
+						healthCheckResult.setResultID(checkResultID);
+						healthCheckResult.setReferedBasicInfo(referedBasicInfo);
+						resultDao.updateCheckResultRecord(healthCheckResult);
+						JOptionPane.showMessageDialog(null, "体检记录修改成功！");
 					} else {
-						CheckResultOperator.addCheckResultRecord(value);
-						JOptionPane.showMessageDialog(null, "体检记录成功添加！");
+						//Original Usage
+//						CheckResultOperator.addCheckResultRecord(value);
+						healthCheckResult.setReferedBasicInfo(referedBasicInfo);
+						resultDao.addCheckResultRecord(healthCheckResult);
+						JOptionPane.showMessageDialog(null, "体检记录添加成功！");
 					}
-					CheckResultOperator.saveData();
+//					CheckResultOperator.saveData();
 					HealthCheckResultInputFrame.this.dispose();
 				}
 			});
@@ -647,20 +690,21 @@ public class HealthCheckResultInputFrame extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				HealthCheckResultInputFrame thisClass = new HealthCheckResultInputFrame();
-				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setVisible(true);
-			}
-		});
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				HealthCheckResultInputFrame thisClass = new HealthCheckResultInputFrame();
+//				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//				thisClass.setVisible(true);
+//			}
+//		});
 	}
 
 	/**
 	 * This is the default constructor
 	 */
-	public HealthCheckResultInputFrame() {
+	public HealthCheckResultInputFrame(BasicInformation basicInfo) {
 		super();
+		this.referedBasicInfo = basicInfo;
 		initialize();
 	}
 
@@ -672,7 +716,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private void initialize() {
 		this.setSize(937, 526);
 		this.setContentPane(getJContentPane());
-		this.setTitle("体检结果录入");
+		this.setTitle("[" + this.getReferedBasicInfo().getName() + "] - 体检结果录入");
 	}
 
 	/**
@@ -685,8 +729,24 @@ public class HealthCheckResultInputFrame extends JFrame {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
 			jContentPane.add(getJTabbedPane(), BorderLayout.CENTER);
+			JPanel buttonPanel = new JPanel();
+			buttonPanel.setLayout(new FlowLayout());
+			buttonPanel.add(getJButton1());
+			JButton cancelButton = new JButton();
+			cancelButton.setText("取消");
+			cancelButton.setPreferredSize(new Dimension(100, 22));
+			cancelButton.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					HealthCheckResultInputFrame.this.dispose();
+				}
+				
+			});
+			buttonPanel.add(cancelButton);
+			jContentPane.add(buttonPanel, BorderLayout.SOUTH);
 		}
 		return jContentPane;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
+

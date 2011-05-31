@@ -2,6 +2,28 @@ package com.hcs.bean;
 
 public class CheckResultBean {
 	
+	public CheckResultBean() {
+		super();
+	}
+
+	public CheckResultBean(String generalInfo, String shParam1,
+			String shParam2, String shParam3, String shParam4, String shParam5,
+			String shParam6, String shParam7, String rayResult,
+			String heartResult, String checkResult) {
+		super();
+		this.generalInfo = generalInfo;
+		this.shParam1 = shParam1;
+		this.shParam2 = shParam2;
+		this.shParam3 = shParam3;
+		this.shParam4 = shParam4;
+		this.shParam5 = shParam5;
+		this.shParam6 = shParam6;
+		this.shParam7 = shParam7;
+		this.rayResult = rayResult;
+		this.heartResult = heartResult;
+		this.checkResult = checkResult;
+	}
+
 	private String resultID;
 
 	private String generalInfo;
@@ -26,6 +48,16 @@ public class CheckResultBean {
 	
 	private String checkResult;
 	
+	private BasicInformation referedBasicInfo;
+	
+	public BasicInformation getReferedBasicInfo() {
+		return referedBasicInfo;
+	}
+
+	public void setReferedBasicInfo(BasicInformation referedBasicInfo) {
+		this.referedBasicInfo = referedBasicInfo;
+	}
+
 	public String getResultID() {
 		return resultID;
 	}
