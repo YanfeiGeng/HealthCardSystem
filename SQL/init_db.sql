@@ -13,8 +13,9 @@ CREATE TABLE health_user(
        id INT NOT NULL AUTO_INCREMENT,
        name VARCHAR(50),
        passwd VARCHAR(50),
-       roleId INT
-);
+       roleId INT,
+       PRIMARY KEY (id)
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /**
  * Define role types
@@ -22,8 +23,9 @@ CREATE TABLE health_user(
 CREATE TABLE health_role(
        id INT NOT NULL AUTO_INCREMENT,
        rolename VARCHAR(50),
-       rolelevel INT
-);
+       rolelevel INT,
+       PRIMARY KEY (id)
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 /**
@@ -39,7 +41,7 @@ CREATE TABLE health_basic_info(
         currentAddress VARCHAR(100),
         checkReport VARCHAR(500),
         PRIMARY KEY (id)
- );
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /**
  * Create Health check result table
@@ -58,8 +60,9 @@ CREATE TABLE health_check_result(
        rayResult VARCHAR(500),
        heartResult VARCHAR(500),
        checkResult VARCHAR(500),
+       basicInfoId INT,
        PRIMARY KEY (resultID)
-);
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
