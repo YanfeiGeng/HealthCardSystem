@@ -15,7 +15,7 @@ public class UserDao {
 	
 	private RoleDao roleDao = new RoleDao();
 	
-	private String listUserSQL = "SELECT id, name, password, roleId FROM health_user";
+	private String listUserSQL = "SELECT id, name, passwd, roleId FROM health_user";
 	
 	/**
 	 * List all users 
@@ -158,7 +158,7 @@ public class UserDao {
 		return false;
 	}
 	
-	private String getUserSQL = "SELECT id, name, password, roleId FROM health_user WHERE id = ?;";
+	private String getUserSQL = "SELECT id, name, passwd, roleId FROM health_user WHERE id = ?;";
 	
 	/**
 	 * Get user by id
