@@ -23,7 +23,7 @@ CREATE TABLE health_user(
 CREATE TABLE health_role(
        id INT NOT NULL AUTO_INCREMENT,
        rolename VARCHAR(50),
-       rolelevel INT,
+       rolelevel VARCHAR(100),
        PRIMARY KEY (id)
  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

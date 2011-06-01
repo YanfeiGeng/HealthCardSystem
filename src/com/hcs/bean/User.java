@@ -2,12 +2,23 @@ package com.hcs.bean;
 
 public class User {
 
+	public User(String name, String password, Role role) {
+		super();
+		this.name = name;
+		this.password = password;
+		this.role = role;
+	}
+
 	private String id;
 	
 	private String name;
 	
 	private String password;
 	
+	public User() {
+		super();
+	}
+
 	private Role role;
 
 	public String getId() {

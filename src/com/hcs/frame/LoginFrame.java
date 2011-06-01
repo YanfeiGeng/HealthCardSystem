@@ -179,9 +179,7 @@ public class LoginFrame extends JFrame {
 	private boolean authUser(){
 		String name = this.getJTextField().getText().trim();
 		String password = new String(this.getJPasswordField().getPassword());
-		User user = new User();
-		user.setName(name);
-		user.setPassword(password);
+		User user = new User(name, password, null);
 		user = userDao.authUser(user); 
 		if(user != null && user.getId() != null){
 			return true;

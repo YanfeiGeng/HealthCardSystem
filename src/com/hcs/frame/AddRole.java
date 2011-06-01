@@ -5,18 +5,23 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Vector;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import com.hcs.bean.AtmoRole;
+import com.hcs.bean.Role;
 import com.hcs.dao.RoleDao;
 import com.hcs.util.RoleDefinition;
 
@@ -32,6 +37,15 @@ public class AddRole extends JFrame {
 	private JButton jButton1 = null;
 	private JLabel jLabel6 = null;
 	private JTextField jTextField = null;
+	private Role role = null;  //  @jve:decl-index=0:
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -40,10 +54,8 @@ public class AddRole extends JFrame {
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.fill = GridBagConstraints.BOTH;
+//			gridBagConstraints11.fill = GridBagConstraints.BOTH;
 			gridBagConstraints11.gridy = 6;
-			gridBagConstraints11.weightx = 1.0;
-			gridBagConstraints11.weighty = 1.0;
 			gridBagConstraints11.gridx = 1;
 			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
 			gridBagConstraints9.fill = GridBagConstraints.VERTICAL;
@@ -55,6 +67,7 @@ public class AddRole extends JFrame {
 			gridBagConstraints8.gridy = 2;
 			jLabel6 = new JLabel();
 			jLabel6.setText("N/A");
+			jLabel6.setEnabled(false);
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 1;
 			gridBagConstraints7.gridy = 7;
@@ -84,9 +97,9 @@ public class AddRole extends JFrame {
 			jPanel = new JPanel();
 			
 			gridBagConstraints.insets = new Insets(0, 0, 0, 100);
-			gridBagConstraints1.insets = new Insets(0, 50, 0, 0);
-			gridBagConstraints2.insets = new Insets(0, 50, 0, 0);
-			gridBagConstraints5.insets = new Insets(0, 50, 0, 0);
+			gridBagConstraints1.insets = new Insets(10, 50, 0, 0);
+			gridBagConstraints2.insets = new Insets(10, 50, 0, 0);
+			gridBagConstraints5.insets = new Insets(10, 50, 0, 0);
 			
 			jPanel.setLayout(new GridBagLayout());
 			jPanel.add(jLabel, gridBagConstraints);
@@ -98,6 +111,7 @@ public class AddRole extends JFrame {
 			jPanel.add(jLabel6, gridBagConstraints8);
 			jPanel.add(getJTextField(), gridBagConstraints9);
 			JScrollPane listPane = new JScrollPane(getJList());
+			listPane.setPreferredSize(new Dimension(200, 100));
 			jPanel.add(listPane, gridBagConstraints11);
 		}
 		return jPanel;
@@ -113,6 +127,27 @@ public class AddRole extends JFrame {
 			jButton = new JButton();
 			jButton.setPreferredSize(new Dimension(60, 22));
 			jButton.setText("添加");
+			jButton.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					Object[] objs = getJList().getSelectedValues();
+					StringBuffer roleLevel = new StringBuffer();
+					for(int i = 0; i < objs.length; i++){
+						AtmoRole role = (AtmoRole)objs[i];
+						roleLevel.append(role.getLevel());
+						if(i < objs.length -1){
+							roleLevel.append(",");
+						}
+					}
+					String name = getJTextField().getText().trim();
+					Role role = new Role(name, roleLevel.toString());
+					if(roleDao.addRole(role)){
+						JOptionPane.showMessageDialog(null, "权限添加成功！");
+					}
+					AddRole.this.dispose();
+				}
+				
+			});
 		}
 		return jButton;
 	}
@@ -127,6 +162,13 @@ public class AddRole extends JFrame {
 			jButton1 = new JButton();
 			jButton1.setPreferredSize(new Dimension(60, 22));
 			jButton1.setText("取消");
+			jButton1.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					AddRole.this.dispose();
+				}
+				
+			});
 		}
 		return jButton1;
 	}
@@ -139,48 +181,15 @@ public class AddRole extends JFrame {
 	private JTextField getJTextField() {
 		if (jTextField == null) {
 			jTextField = new JTextField();
-			jTextField.setPreferredSize(new Dimension(100, 22));
+			jTextField.setPreferredSize(new Dimension(200, 22));
 		}
 		return jTextField;
 	}
 
-	private RoleDao roleDao = new RoleDao();
+	private RoleDao roleDao = new RoleDao();  //  @jve:decl-index=0:
 	private JList jList = null;
 	
-	class AtmoRole{
-		
-		public AtmoRole(int level, String name) {
-			super();
-			this.level = level;
-			this.name = name;
-		}
-
-		private int level;
-		
-		private String name;
-
-		public int getLevel() {
-			return level;
-		}
-
-		public void setLevel(int level) {
-			this.level = level;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
-		
-	}
+	
 	
 	/**
 	 * This method initializes jList	
@@ -189,12 +198,7 @@ public class AddRole extends JFrame {
 	 */
 	private JList getJList() {
 		if (jList == null) {
-			Vector<AtmoRole> roles = new Vector<AtmoRole>();
-			roles.add(new AtmoRole(RoleDefinition.BASIC_INFO, "人员基本信息管理"));
-			roles.add(new AtmoRole(RoleDefinition.HEALTH_CHECK, "体检结果管理"));
-			roles.add(new AtmoRole(RoleDefinition.HEALTH_STATICS, "统计搜索信息管理"));
-			roles.add(new AtmoRole(RoleDefinition.USER_ROLE, "用户权限管理"));
-			jList = new JList(roles);
+			jList = new JList(RoleDefinition.roles);
 			jList.setVisibleRowCount(3);
 			jList.setBorder(new LineBorder(Color.BLACK, 1));
 		}
@@ -221,6 +225,25 @@ public class AddRole extends JFrame {
 	public AddRole() {
 		super();
 		initialize();
+	}
+	
+	public AddRole(Role role) {
+		super();
+		initialize();
+		this.role = role;
+		if(this.role != null){
+			jLabel6.setText(role.getId());
+			jTextField.setText(role.getRoleName());
+			ListModel model = jList.getModel();
+			int size = model.getSize();
+			for(int pos = 0; pos < size; pos++){
+				AtmoRole roleI = (AtmoRole) model.getElementAt(pos);
+				String roleLevel = this.role.getRoleLevel();
+				if(roleI != null && roleLevel != null && roleLevel.contains(String.valueOf(roleI.getLevel()))){
+					jList.setSelectedIndex(pos);
+				}
+			}
+		}
 	}
 
 	/**

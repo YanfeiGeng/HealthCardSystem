@@ -2,11 +2,21 @@ package com.hcs.bean;
 
 public class Role {
 
+	public Role() {
+		super();
+	}
+
+	public Role(String roleName, String roleLevel) {
+		super();
+		this.roleName = roleName;
+		this.roleLevel = roleLevel;
+	}
+
 	private String id;
 	
 	private String roleName;
 	
-	private int roleLevel;
+	private String roleLevel;
 
 	public String getId() {
 		return id;
@@ -24,11 +34,16 @@ public class Role {
 		this.roleName = roleName;
 	}
 
-	public int getRoleLevel() {
+	public String getRoleLevel() {
 		return roleLevel;
 	}
 
-	public void setRoleLevel(int roleLevel) {
+	@Override
+	public String toString() {
+		return this.roleName;
+	}
+
+	public void setRoleLevel(String roleLevel) {
 		this.roleLevel = roleLevel;
 	}
 	

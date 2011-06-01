@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Vector;
 
@@ -11,12 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import com.hcs.bean.Role;
+import com.hcs.bean.User;
 import com.hcs.dao.RoleDao;
 import com.hcs.dao.UserDao;
 
@@ -142,6 +146,23 @@ public class AddUser extends JFrame {
 			jButton = new JButton();
 			jButton.setPreferredSize(new Dimension(60, 22));
 			jButton.setText("添加");
+			jButton.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					String name = getJTextField().getText().trim();
+					String passwd = new String(getJPasswordField().getPassword());
+					String confirmPwd = new String(getJPasswordField1().getPassword());
+					Role role = (Role)getJComboBox().getSelectedItem();
+					System.out.println(role);
+					System.out.println(name + ", " + passwd + ", " + confirmPwd + ", " + role.getRoleLevel() + ", " + role.getRoleName());
+					User user = new User(name, passwd, role);
+					if(userDao.addUser(user)){
+						JOptionPane.showMessageDialog(null, "用户添加成功！");
+					}
+					AddUser.this.dispose();
+				}
+				
+			});
 		}
 		return jButton;
 	}
@@ -156,6 +177,13 @@ public class AddUser extends JFrame {
 			jButton1 = new JButton();
 			jButton1.setPreferredSize(new Dimension(60, 22));
 			jButton1.setText("取消");
+			jButton1.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					AddUser.this.dispose();
+				}
+				
+			});
 		}
 		return jButton1;
 	}
@@ -201,7 +229,7 @@ public class AddUser extends JFrame {
 
 	
 	private RoleDao roleDao = new RoleDao();
-	private UserDao userDao = new UserDao();
+	private UserDao userDao = new UserDao();  //  @jve:decl-index=0:
 	/**
 	 * This method initializes jComboBox	
 	 * 	

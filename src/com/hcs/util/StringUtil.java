@@ -1,5 +1,7 @@
 package com.hcs.util;
 
+import com.hcs.bean.AtmoRole;
+
 public class StringUtil {
 
 	/**
@@ -8,6 +10,24 @@ public class StringUtil {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	//Used for role
+	public static String convertRoleIdToString(String roles){
+		StringBuffer realRole = new StringBuffer();
+		String[] ids = roles.split(",");
+		for(int i = 0; i < ids.length; i++){
+			int id = Integer.parseInt(ids[i]);
+			for(AtmoRole role : RoleDefinition.roles){
+				if(id == role.getLevel()){
+					realRole.append(role.getName());
+				}
+			}
+			if(i <= ids.length -1){
+				realRole.append(",");
+			}
+		}
+		return realRole.toString();
 	}
 	
 	public static String filterGamaAndEnter(String source){

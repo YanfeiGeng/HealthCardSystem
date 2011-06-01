@@ -33,7 +33,7 @@ public class RoleDao {
 			while(result.next()){
 				role.setId(result.getString("id"));
 				role.setRoleName(result.getString("rolename"));
-				role.setRoleLevel(result.getInt("rolelevel"));
+				role.setRoleLevel(result.getString("rolelevel"));
 			}
 			return role;
 		} catch (SQLException e) {
@@ -65,7 +65,7 @@ public class RoleDao {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(addRoleSQL);
 			state.setString(1, role.getRoleName());
-			state.setInt(2, role.getRoleLevel());
+			state.setString(2, role.getRoleLevel());
 			state.execute();
 			return true;
 		} catch (SQLException e) {
@@ -94,15 +94,15 @@ public class RoleDao {
 		Connection conn = null;
 		Statement state = null;
 		ResultSet result = null;
-		Role role = new Role();
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.createStatement();
 			result = state.executeQuery(listRoles);
 			while(result.next()){
+				Role role = new Role();
 				role.setId(result.getString("id"));
 				role.setRoleName(result.getString("rolename"));
-				role.setRoleLevel(result.getInt("rolelevel"));
+				role.setRoleLevel(result.getString("rolelevel"));
 				roles.add(role);
 			}
 			return roles;
@@ -135,7 +135,7 @@ public class RoleDao {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(updateRole);
 			state.setString(1, role.getRoleName());
-			state.setInt(2, role.getRoleLevel());
+			state.setString(2, role.getRoleLevel());
 			state.setInt(3, Integer.parseInt(role.getId()));
 			state.execute();
 		} catch (SQLException e) {

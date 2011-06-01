@@ -30,8 +30,8 @@ public class UserDao {
 			conn = DBHelper.getConnection();
 			state = conn.createStatement();
 			result = state.executeQuery(listUserSQL);
-			User resultUser = new User();
 			if(result.next()){
+				User resultUser = new User();
 				resultUser.setId(result.getString(1));
 				resultUser.setName(result.getString(2));
 				resultUser.setPassword(result.getString(3));
@@ -113,6 +113,7 @@ public class UserDao {
 			state.setString(2, user.getPassword());
 			state.setString(3, user.getRole().getId());
 			state.execute();
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
