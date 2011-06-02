@@ -1,27 +1,30 @@
 package com.hcs.frame;
 
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import javax.swing.BorderFactory;
 import java.awt.Color;
-import javax.swing.border.BevelBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.hcs.bean.BasicInformation;
+import com.hcs.bean.CheckResultBean;
+import com.hcs.dao.BasicInfoDao;
+import com.hcs.dao.HealthCheckResultDao;
 
 public class DataStaticFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JPanel jPanel = null;
-	private JLabel jLabel = null;
-	private JLabel jLabel1 = null;
-	private JLabel jLabel2 = null;
-	private JLabel jLabel3 = null;
-
+	private JTree jTree = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -29,34 +32,44 @@ public class DataStaticFrame extends JFrame {
 	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.gridx = 1;
-			gridBagConstraints3.gridy = 1;
-			jLabel3 = new JLabel();
-			jLabel3.setText("JLabel");
-			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			gridBagConstraints2.gridx = 0;
-			gridBagConstraints2.gridy = 1;
-			jLabel2 = new JLabel();
-			jLabel2.setText("JLabel");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 1;
+			gridBagConstraints1.fill = GridBagConstraints.BOTH;
 			gridBagConstraints1.gridy = 0;
-			jLabel1 = new JLabel();
-			jLabel1.setText("JLabel");
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 0;
-			gridBagConstraints.gridy = 0;
-			jLabel = new JLabel();
-			jLabel.setText("JLabel");
+			gridBagConstraints1.weightx = 1.0;
+			gridBagConstraints1.weighty = 1.0;
+			gridBagConstraints1.gridx = 0;
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
-			jPanel.add(jLabel, gridBagConstraints);
-			jPanel.add(jLabel1, gridBagConstraints1);
-			jPanel.add(jLabel2, gridBagConstraints2);
-			jPanel.add(jLabel3, gridBagConstraints3);
+			jPanel.add(getJTree(), gridBagConstraints1);
 		}
 		return jPanel;
+	}
+
+	
+	private BasicInfoDao basicInfoDao = new BasicInfoDao(); 
+	
+	private HealthCheckResultDao healthCheckResultDao = new HealthCheckResultDao();  
+	/**
+	 * This method initializes jTree	
+	 * 	
+	 * @return javax.swing.JTree	
+	 */
+	private JTree getJTree() {
+		if (jTree == null) {
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode("健康体检系统信息统计");
+			List<BasicInformation> users = basicInfoDao.getHealthCardRecords();
+			for(BasicInformation user : users){
+				DefaultMutableTreeNode userNode = new DefaultMutableTreeNode(user);
+				List<CheckResultBean> checkResults = healthCheckResultDao.getCheckResultRecords();
+				for(CheckResultBean checkResult : checkResults){
+					DefaultMutableTreeNode checkResultNode = new DefaultMutableTreeNode(checkResult);
+					userNode.add(checkResultNode);
+				}
+				root.add(userNode);
+			}
+			jTree = new JTree(root);
+		}
+		return jTree;
 	}
 
 	/**

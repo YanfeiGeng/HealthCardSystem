@@ -66,9 +66,8 @@ public class BasicInfoManageFrame extends JFrame {
 						Object id = model.getValueAt(rowSel, 0);
 						BasicInformation basicInfo = basicDao.getHealthCardRecordById(id.toString());
 						
-//						Original Usage
-//						String[] value = data.get(rowSel);
 						BasicInfoInputFrame infoInputFrame = new BasicInfoInputFrame();
+						infoInputFrame.setBasicInfoFrame(BasicInfoManageFrame.this);
 						UIUtil.setInCenter(infoInputFrame);
 						infoInputFrame.initValue(basicInfo);
 						infoInputFrame.setVisible(true);
@@ -116,6 +115,36 @@ public class BasicInfoManageFrame extends JFrame {
 	}
 	
 	private List<String[]> data = BasicInfoOperator.getHealthCardRecords();  //  @jve:decl-index=0:
+	
+	private DefaultTableModel initBasicInfo(){
+		List<BasicInformation> basicRecords = basicDao.getHealthCardRecords();
+		String[] columnNames = {"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告"};
+		String[][] initData = new String[basicRecords.size()][8];
+		
+		//Original Usage
+//		for(int i = 0; i < initData.length; i++){
+//			initData[i] = data.get(i);
+//		}
+		
+		for(int i = 0; i < basicRecords.size(); i++){
+			BasicInformation info = basicRecords.get(i);
+			initData[i][0] = info.getId();
+			initData[i][1] = info.getName();
+			initData[i][2] = info.getSex();
+			initData[i][3] = info.getAge();
+			initData[i][4] = info.getBirthday().toString();
+			initData[i][5] = info.getAddress();
+			initData[i][6] = info.getCurrentAddress();
+			initData[i][7] = info.getCheckReport();
+		}
+		DefaultTableModel model = new DefaultTableModel(initData, columnNames);
+		return model;
+	}
+	
+	public void refreshBasicInfoTable(){
+		getJTable().setModel(initBasicInfo());
+		((DefaultTableModel)getJTable().getModel()).fireTableStructureChanged();
+	}
 
 	/**
 	 * This method initializes jTable	
@@ -124,28 +153,7 @@ public class BasicInfoManageFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			List<BasicInformation> basicRecords = basicDao.getHealthCardRecords();
-			String[] columnNames = {"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告"};
-			String[][] initData = new String[basicRecords.size()][8];
-			
-			//Original Usage
-//			for(int i = 0; i < initData.length; i++){
-//				initData[i] = data.get(i);
-//			}
-			
-			for(int i = 0; i < basicRecords.size(); i++){
-				BasicInformation info = basicRecords.get(i);
-				initData[i][0] = info.getId();
-				initData[i][1] = info.getName();
-				initData[i][2] = info.getSex();
-				initData[i][3] = info.getAge();
-				initData[i][4] = info.getBirthday().toString();
-				initData[i][5] = info.getAddress();
-				initData[i][6] = info.getCurrentAddress();
-				initData[i][7] = info.getCheckReport();
-			}
-			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
-			jTable = new JTable(model);
+			jTable = new JTable(initBasicInfo());
 			jTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		}
 		return jTable;

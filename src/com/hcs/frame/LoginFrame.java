@@ -157,7 +157,7 @@ public class LoginFrame extends JFrame {
 						jButton.setEnabled(false);
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								Main thisClass = new Main();
+								Main thisClass = new Main(user.getRole());
 								UIUtil.setInCenter(thisClass);
 								thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 								thisClass.setVisible(true);
@@ -175,13 +175,19 @@ public class LoginFrame extends JFrame {
 	}
 	
 	
-	private UserDao userDao = new UserDao();
+	private UserDao userDao = new UserDao();  //  @jve:decl-index=0:
+	
+	private User user = new User();  //  @jve:decl-index=0:
+	
 	private boolean authUser(){
 		String name = this.getJTextField().getText().trim();
 		String password = new String(this.getJPasswordField().getPassword());
-		User user = new User(name, password, null);
+		user.setName(name);
+		user.setPassword(password);
+		Role role = (Role)getJComboBox().getSelectedItem();
 		user = userDao.authUser(user); 
-		if(user != null && user.getId() != null){
+		if(user != null && user.getId() != null 
+				&& role != null && role.getId().equals(user.getRole().getId())){
 			return true;
 		} else {
 			return false;

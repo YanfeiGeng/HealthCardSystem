@@ -2,6 +2,7 @@ package com.hcs.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +24,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.FontUIResource;
 
+import com.hcs.bean.Role;
 import com.hcs.util.BasicInfoOperator;
+import com.hcs.util.RoleDefinition;
+import com.hcs.util.StringUtil;
 import com.hcs.util.UIUtil;
 
 public class Main extends JFrame {
@@ -45,6 +49,7 @@ public class Main extends JFrame {
 	private JMenuItem baseInfoEdit = null;
 	private JMenuItem checkManagent = null;
 	private JLabel welcome = null;
+	private Role userRole = null; 
 
 	/**
 	 * This method initializes jJMenuBar	
@@ -54,11 +59,29 @@ public class Main extends JFrame {
 	private JMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
 			jJMenuBar = new JMenuBar();
-			jJMenuBar.add(getHealthCardInfo());
-			jJMenuBar.add(getHealthCheck());
-			jJMenuBar.add(getHealthCardPrint());
-			jJMenuBar.add(getDataStatAndSearch());
-			jJMenuBar.add(getAuthManage());
+			if(userRole != null){
+				int[] roles = StringUtil.convertRoleLevelToIntArray(userRole.getRoleLevel());
+				for(int i = 0; i < roles.length; i++){
+					switch(roles[i]){
+						case RoleDefinition.BASIC_INFO:
+							jJMenuBar.add(getHealthCardInfo());
+							break;
+						case RoleDefinition.HEALTH_CHECK:
+							jJMenuBar.add(getHealthCheck());
+							break;
+						case RoleDefinition.PRINT_BASIC:
+							jJMenuBar.add(getHealthCardPrint());
+							break;
+						case RoleDefinition.HEALTH_STATICS:
+							jJMenuBar.add(getDataStatAndSearch());
+							break;
+						case RoleDefinition.USER_ROLE:
+							jJMenuBar.add(getAuthManage());
+							break;
+						default:
+					}
+				}
+			}
 		}
 		return jJMenuBar;
 	}
@@ -210,6 +233,15 @@ public class Main extends JFrame {
 			dataStatic = new JMenuItem();
 			dataStatic.setToolTipText("");
 			dataStatic.setText("数据统计");
+			dataStatic.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					DataStaticFrame dataStatic = new DataStaticFrame();
+					UIUtil.setInCenter(dataStatic);
+					dataStatic.setVisible(true);
+				}
+				
+			});
 		}
 		return dataStatic;
 	}
@@ -224,6 +256,15 @@ public class Main extends JFrame {
 			dataSearch = new JMenuItem();
 			dataSearch.setToolTipText("");
 			dataSearch.setText("数据查询");
+			dataSearch.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					DataSearchFrame dataSearchFrame = new DataSearchFrame();
+					UIUtil.setInCenter(dataSearchFrame);
+					dataSearchFrame.setVisible(true);
+				}
+				
+			});
 		}
 		return dataSearch;
 	}
@@ -345,6 +386,13 @@ public class Main extends JFrame {
 		initialize();
 	}
 
+	public Main(Role userRole) throws HeadlessException {
+		super();
+		this.setUserRole(userRole);
+		initialize();
+		this.userRole = userRole;
+	}
+
 	/**
 	 * This method initializes this
 	 * 
@@ -374,6 +422,14 @@ public class Main extends JFrame {
 			jContentPane.add(welcome, BorderLayout.CENTER);
 		}
 		return jContentPane;
+	}
+
+	public Role getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(Role userRole) {
+		this.userRole = userRole;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

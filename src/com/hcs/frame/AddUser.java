@@ -3,12 +3,14 @@ package com.hcs.frame;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -25,6 +27,34 @@ import com.hcs.dao.RoleDao;
 import com.hcs.dao.UserDao;
 
 public class AddUser extends JFrame {
+	
+	private User user = null;
+	
+	private RoleManageFrame roleManageFrame = null;
+	
+	public AddUser(User user) throws HeadlessException {
+		super();
+		initialize();
+		if(user != null){
+			this.user = user;
+			jLabel6.setEnabled(false);
+			jLabel6.setText(user.getId());
+			this.setTitle("编辑用户");
+			jButton.setText("更新");
+			getJTextField().setText(user.getName());
+			getJPasswordField().setText(user.getPassword());
+			getJPasswordField1().setText(user.getPassword());
+			ComboBoxModel model = getJComboBox().getModel();
+			int size = model.getSize();
+			for(int pos = 0; pos < size; pos++){
+				Role role = (Role) model.getElementAt(pos);
+				if(role != null && role.getId().equals(user.getRole().getId())){
+					getJComboBox().setSelectedIndex(pos);
+				}
+			}
+		}
+	}
+
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jPanel = null;
@@ -72,7 +102,8 @@ public class AddUser extends JFrame {
 			gridBagConstraints8.gridx = 1;
 			gridBagConstraints8.gridy = 2;
 			jLabel6 = new JLabel();
-			jLabel6.setText("JLabel");
+			jLabel6.setText("N/A");
+			jLabel6.setEnabled(false);
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 1;
 			gridBagConstraints7.gridy = 7;
@@ -156,9 +187,18 @@ public class AddUser extends JFrame {
 					System.out.println(role);
 					System.out.println(name + ", " + passwd + ", " + confirmPwd + ", " + role.getRoleLevel() + ", " + role.getRoleName());
 					User user = new User(name, passwd, role);
-					if(userDao.addUser(user)){
-						JOptionPane.showMessageDialog(null, "用户添加成功！");
+					if(AddUser.this.user != null){
+						user.setId(AddUser.this.user.getId());
+						userDao.updateUser(user);
+						JOptionPane.showMessageDialog(null, "用户更新成功！");
+						AddUser.this.getRoleManageFrame().refreshUserTable();
+					} else {
+						if(userDao.addUser(user)){
+							JOptionPane.showMessageDialog(null, "用户添加成功！");
+							AddUser.this.getRoleManageFrame().refreshUserTable();
+						}
 					}
+					
 					AddUser.this.dispose();
 				}
 				
@@ -279,6 +319,14 @@ public class AddUser extends JFrame {
 		this.setSize(380, 234);
 		this.setContentPane(getJPanel());
 		this.setTitle("添加用户");
+	}
+
+	public RoleManageFrame getRoleManageFrame() {
+		return roleManageFrame;
+	}
+
+	public void setRoleManageFrame(RoleManageFrame roleManageFrame) {
+		this.roleManageFrame = roleManageFrame;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

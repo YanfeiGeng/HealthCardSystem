@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,6 +40,8 @@ public class AddRole extends JFrame {
 	private JLabel jLabel6 = null;
 	private JTextField jTextField = null;
 	private Role role = null;  //  @jve:decl-index=0:
+	private RoleManageFrame roleManageFrame = null;
+	
 	public Role getRole() {
 		return role;
 	}
@@ -141,9 +145,18 @@ public class AddRole extends JFrame {
 					}
 					String name = getJTextField().getText().trim();
 					Role role = new Role(name, roleLevel.toString());
-					if(roleDao.addRole(role)){
-						JOptionPane.showMessageDialog(null, "权限添加成功！");
+					if(AddRole.this.getRole() != null){
+						role.setId(AddRole.this.getRole().getId());
+						roleDao.updateRole(role);
+						JOptionPane.showMessageDialog(null, "权限修改成功！");
+						AddRole.this.getRoleManageFrame().refreshRoleTable();
+					} else {
+						if(roleDao.addRole(role)){
+							JOptionPane.showMessageDialog(null, "权限添加成功！");
+							AddRole.this.getRoleManageFrame().refreshRoleTable();
+						}
 					}
+					
 					AddRole.this.dispose();
 				}
 				
@@ -234,15 +247,23 @@ public class AddRole extends JFrame {
 		if(this.role != null){
 			jLabel6.setText(role.getId());
 			jTextField.setText(role.getRoleName());
+			this.setTitle("编辑权限");
+			jButton.setText("更新");
 			ListModel model = jList.getModel();
 			int size = model.getSize();
+			List<Integer> selectIndexs = new ArrayList<Integer>();
 			for(int pos = 0; pos < size; pos++){
 				AtmoRole roleI = (AtmoRole) model.getElementAt(pos);
 				String roleLevel = this.role.getRoleLevel();
 				if(roleI != null && roleLevel != null && roleLevel.contains(String.valueOf(roleI.getLevel()))){
-					jList.setSelectedIndex(pos);
+					selectIndexs.add(pos);
 				}
 			}
+			int[] indexs = new int[selectIndexs.size()];
+			for(int i = 0; i < indexs.length; i++){
+				indexs[i] = selectIndexs.get(i).intValue();
+			}
+			jList.setSelectedIndices(indexs);
 		}
 	}
 
@@ -255,6 +276,14 @@ public class AddRole extends JFrame {
 		this.setSize(400, 300);
 		this.setContentPane(getJPanel());
 		this.setTitle("添加权限");
+	}
+
+	public RoleManageFrame getRoleManageFrame() {
+		return roleManageFrame;
+	}
+
+	public void setRoleManageFrame(RoleManageFrame roleManageFrame) {
+		this.roleManageFrame = roleManageFrame;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

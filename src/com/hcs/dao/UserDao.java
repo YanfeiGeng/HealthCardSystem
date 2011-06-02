@@ -30,7 +30,7 @@ public class UserDao {
 			conn = DBHelper.getConnection();
 			state = conn.createStatement();
 			result = state.executeQuery(listUserSQL);
-			if(result.next()){
+			while(result.next()){
 				User resultUser = new User();
 				resultUser.setId(result.getString(1));
 				resultUser.setName(result.getString(2));
@@ -73,7 +73,7 @@ public class UserDao {
 			state.setString(2, user.getPassword());
 			result = state.executeQuery();
 			User resultUser = new User();
-			if(result.next()){
+			while(result.next()){
 				resultUser.setId(result.getString(1));
 				resultUser.setName(result.getString(2));
 				resultUser.setPassword(result.getString(3));
@@ -129,20 +129,22 @@ public class UserDao {
 		return false;
 	}
 	
-	private String updateSQL = "UPDATE health_user SET passwd = ? WHERE id = ?;";
+	private String updateSQL = "UPDATE health_user SET name = ?, passwd = ?, roleId = ? WHERE id = ?;";
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public boolean changePasswd(User user){
+	public boolean updateUser(User user){
 		Connection conn = null;
 		PreparedStatement state = null;
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(updateSQL);
-			state.setString(1, user.getPassword());
-			state.setString(2, user.getId());
+			state.setString(1, user.getName());
+			state.setString(2, user.getPassword());
+			state.setString(3, user.getRole().getId());
+			state.setString(4, user.getId());
 			state.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

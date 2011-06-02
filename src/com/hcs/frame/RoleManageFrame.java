@@ -63,6 +63,7 @@ public class RoleManageFrame extends JFrame {
 					AddRole addRole = new AddRole();
 					UIUtil.setInCenter(addRole);
 					addRole.setVisible(true);
+					addRole.setRoleManageFrame(RoleManageFrame.this);
 				}
 				
 			});
@@ -75,13 +76,13 @@ public class RoleManageFrame extends JFrame {
 					if(rowSel == -1){
 						JOptionPane.showMessageDialog(null, "请选中需要编辑的权限！");
 					} else {
-						DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
-						System.out.println(rowSel);
+						DefaultTableModel model = (DefaultTableModel) getJTable1().getModel();
 						Object id = model.getValueAt(rowSel, 0);
 						Role editRole = roleDao.getRoleById(id.toString());
 						AddRole roleFrame = new AddRole(editRole);
 						UIUtil.setInCenter(roleFrame);
 						roleFrame.setVisible(true);
+						roleFrame.setRoleManageFrame(RoleManageFrame.this);
 					}
 				}
 				
@@ -97,12 +98,13 @@ public class RoleManageFrame extends JFrame {
 					} else {
 						int yesOrNo = JOptionPane.showConfirmDialog(null, "确认要删除选定的权限吗？", "删除确认", JOptionPane.YES_NO_OPTION);
 						if(yesOrNo == JOptionPane.YES_OPTION){
-							DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+							DefaultTableModel model = (DefaultTableModel) getJTable1().getModel();
 							Object id = model.getValueAt(rowSel, 0);
 							Role role = new Role();
 							role.setId(id.toString());
 							roleDao.deleteRole(role);
 							model.removeRow(rowSel);
+							JOptionPane.showMessageDialog(null, "权限记录被成功删除！");
 						}
 					}
 				}
@@ -132,10 +134,61 @@ public class RoleManageFrame extends JFrame {
 					AddUser addUser = new AddUser();
 					UIUtil.setInCenter(addUser);
 					addUser.setVisible(true);
+					addUser.setRoleManageFrame(RoleManageFrame.this);
 				}
 				
 			});
+			
+			JButton editBtn = new JButton("编辑用户");
+			editBtn.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					int rowSel = getJTable().getSelectedRow(); 
+					if(rowSel == -1){
+						JOptionPane.showMessageDialog(null, "请选中需要编辑的用户！");
+					} else {
+						DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+						Object id = model.getValueAt(rowSel, 0);
+						
+						User user = userDao.getUserById(id.toString());
+						AddUser editUser = new AddUser(user);
+						UIUtil.setInCenter(editUser);
+						editUser.setVisible(true);
+						editUser.setRoleManageFrame(RoleManageFrame.this);
+						
+//						Role role = new Role();
+//						role.setId(id.toString());
+//						roleDao.deleteRole(role);
+//						model.removeRow(rowSel);
+					}
+				}
+				
+			});
+			
+			JButton delBtn = new JButton("删除用户");
+			delBtn.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					int rowSel = getJTable().getSelectedRow(); 
+					if(rowSel == -1){
+						JOptionPane.showMessageDialog(null, "请选中需要删除的用户！");
+					} else {
+						int yesOrNo = JOptionPane.showConfirmDialog(null, "确认要删除选定的用户吗？", "删除确认", JOptionPane.YES_NO_OPTION);
+						if(yesOrNo == JOptionPane.YES_OPTION){
+							DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
+							Object id = model.getValueAt(rowSel, 0);
+							userDao.deleteUser(id.toString());
+							model.removeRow(rowSel);
+							JOptionPane.showMessageDialog(null, "用户被成功删除！");
+						}
+					}
+				}
+				
+			});
+			
 			userPanel.add(addBtn);
+			userPanel.add(editBtn);
+			userPanel.add(delBtn);
 		}
 		return userPanel;
 	}
@@ -205,6 +258,32 @@ public class RoleManageFrame extends JFrame {
 	}
 
 	private UserDao userDao = new UserDao();
+	
+	private String[][] initData = null;
+	
+	
+	
+	private DefaultTableModel initUser(){
+		String[] userHeader = {"用户ID", "姓名", "权限", "其他"};
+		List<User> users = userDao.listAllUser();
+		initData = new String[users.size()][4];
+		for(int i = 0; i < users.size(); i++){
+			User user = users.get(i);
+			initData[i][0] = user.getId();
+			initData[i][1] = user.getName();
+			initData[i][2] = user.getRole().getRoleName();
+			initData[i][3] = "无";
+		}
+		DefaultTableModel model = new DefaultTableModel(initData, userHeader);
+		return model;
+	}
+	
+	
+	public void refreshUserTable(){
+		RoleManageFrame.this.getJTable().setModel(RoleManageFrame.this.initUser());
+		((DefaultTableModel)RoleManageFrame.this.getJTable().getModel()).fireTableStructureChanged();
+	}
+	
 	/**
 	 * This method initializes jTable	
 	 * 	
@@ -212,18 +291,7 @@ public class RoleManageFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			String[] columnNames = {"用户ID", "姓名", "权限", "其他"};
-			List<User> users = userDao.listAllUser();
-			String[][] initData = new String[users.size()][4];
-			for(int i = 0; i < users.size(); i++){
-				User user = users.get(i);
-				initData[i][0] = user.getId();
-				initData[i][1] = user.getName();
-				initData[i][2] = user.getRole().getRoleName();
-				initData[i][3] = "无";
-			}
-			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
-			jTable = new JTable(model);
+			jTable = new JTable(initUser());
 		}
 		return jTable;
 	}
@@ -264,6 +332,27 @@ public class RoleManageFrame extends JFrame {
 
 	
 	private RoleDao roleDao = new RoleDao();  //  @jve:decl-index=0:
+	
+	private DefaultTableModel initRoles(){
+		String[] columnNames = {"权限ID", "权限名称", "级别", "其他"};
+		List<Role> roles = roleDao.listRoles();
+		String[][] initData = new String[roles.size()][4];
+		for(int i = 0; i < roles.size(); i++){
+			Role role = roles.get(i);
+			initData[i][0] = role.getId();
+			initData[i][1] = role.getRoleName();
+			initData[i][2] = StringUtil.convertRoleIdToString(role.getRoleLevel());
+			initData[i][3] = "无";
+		}
+		DefaultTableModel model = new DefaultTableModel(initData, columnNames);
+		return model;
+	}
+	
+	public void refreshRoleTable(){
+		this.getJTable1().setModel(initRoles());
+		((DefaultTableModel)getJTable1().getModel()).fireTableStructureChanged();
+	}
+	
 	/**
 	 * This method initializes jTable1	
 	 * 	
@@ -271,18 +360,7 @@ public class RoleManageFrame extends JFrame {
 	 */
 	private JTable getJTable1() {
 		if (jTable1 == null) {
-			String[] columnNames = {"权限ID", "权限名称", "级别", "其他"};
-			List<Role> roles = roleDao.listRoles();
-			String[][] initData = new String[roles.size()][4];
-			for(int i = 0; i < roles.size(); i++){
-				Role role = roles.get(i);
-				initData[i][0] = role.getId();
-				initData[i][1] = role.getRoleName();
-				initData[i][2] = StringUtil.convertRoleIdToString(role.getRoleLevel());
-				initData[i][3] = "无";
-			}
-			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
-			jTable1 = new JTable(model);
+			jTable1 = new JTable(initRoles());
 		}
 		return jTable1;
 	}

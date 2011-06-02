@@ -69,6 +69,7 @@ public class HealthCheckResultInputFrame extends JFrame {
 	private JButton jButton1 = null;
 	private HealthCheckResultDao resultDao = new HealthCheckResultDao();  //  @jve:decl-index=0:
 	private BasicInformation referedBasicInfo = null;  //  @jve:decl-index=0:
+	private HealthCheckResultManageFrame checkResultFrame = null;
 	public BasicInformation getReferedBasicInfo() {
 		return referedBasicInfo;
 	}
@@ -671,12 +672,18 @@ public class HealthCheckResultInputFrame extends JFrame {
 						healthCheckResult.setReferedBasicInfo(referedBasicInfo);
 						resultDao.updateCheckResultRecord(healthCheckResult);
 						JOptionPane.showMessageDialog(null, "体检记录修改成功！");
+						if(HealthCheckResultInputFrame.this.getCheckResultFrame() != null){
+							HealthCheckResultInputFrame.this.getCheckResultFrame().refreshCheckResultTable();
+						}
 					} else {
 						//Original Usage
 //						CheckResultOperator.addCheckResultRecord(value);
 						healthCheckResult.setReferedBasicInfo(referedBasicInfo);
 						resultDao.addCheckResultRecord(healthCheckResult);
 						JOptionPane.showMessageDialog(null, "体检记录添加成功！");
+						if(HealthCheckResultInputFrame.this.getCheckResultFrame() != null){
+							HealthCheckResultInputFrame.this.getCheckResultFrame().refreshCheckResultTable();
+						}
 					}
 //					CheckResultOperator.saveData();
 					HealthCheckResultInputFrame.this.dispose();
@@ -746,6 +753,14 @@ public class HealthCheckResultInputFrame extends JFrame {
 			jContentPane.add(buttonPanel, BorderLayout.SOUTH);
 		}
 		return jContentPane;
+	}
+
+	public HealthCheckResultManageFrame getCheckResultFrame() {
+		return checkResultFrame;
+	}
+
+	public void setCheckResultFrame(HealthCheckResultManageFrame checkResultFrame) {
+		this.checkResultFrame = checkResultFrame;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

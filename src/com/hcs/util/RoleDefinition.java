@@ -14,12 +14,15 @@ public class RoleDefinition {
 	
 	public static final int USER_ROLE = 3;
 	
+	public static final int PRINT_BASIC = 4;
+	
 	public static Vector<AtmoRole> roles;
 	
 	static {
 		roles = new Vector<AtmoRole>();
 		roles.add(new AtmoRole(RoleDefinition.BASIC_INFO, "人员基本信息管理"));
 		roles.add(new AtmoRole(RoleDefinition.HEALTH_CHECK, "体检结果管理"));
+		roles.add(new AtmoRole(RoleDefinition.PRINT_BASIC, "健康证打印管理"));
 		roles.add(new AtmoRole(RoleDefinition.HEALTH_STATICS, "统计搜索信息管理"));
 		roles.add(new AtmoRole(RoleDefinition.USER_ROLE, "用户权限管理"));
 	}

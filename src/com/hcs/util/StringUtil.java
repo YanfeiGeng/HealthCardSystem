@@ -30,6 +30,15 @@ public class StringUtil {
 		return realRole.toString();
 	}
 	
+	public static int[] convertRoleLevelToIntArray(String roles){
+		String[] roleLevels = roles.split(",");
+		int[] levels = new int[roleLevels.length];
+		for(int i = 0; i < levels.length; i++){
+			levels[i] = Integer.parseInt(roleLevels[i]);
+		}
+		return levels;
+	}
+	
 	public static String filterGamaAndEnter(String source){
 		if(null == source || "".equals(source)){
 			return "";

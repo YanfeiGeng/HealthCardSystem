@@ -104,7 +104,7 @@ public class HealthCheckResultDao {
 		return false;
 	}
 	
-	private String deleteOneRecordSQL = "DELETE FROM health_check_result WHERE id = ?";
+	private String deleteOneRecordSQL = "DELETE FROM health_check_result WHERE resultid = ?";
 	/**
 	 * Delete one health check record
 	 * @param id
@@ -116,7 +116,7 @@ public class HealthCheckResultDao {
 		try {
 			conn = DBHelper.getConnection();
 			state = conn.prepareStatement(deleteOneRecordSQL);
-			state.setString(0, id);
+			state.setString(1, id);
 			state.execute();
 			return true;
 		} catch (SQLException e) {

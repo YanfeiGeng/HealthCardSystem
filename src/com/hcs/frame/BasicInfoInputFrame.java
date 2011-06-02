@@ -54,6 +54,8 @@ public class BasicInfoInputFrame extends JFrame {
 	private ButtonGroup group = new ButtonGroup();
 	private String basicInfoId = ""; 
 	
+	private BasicInfoManageFrame basicInfoFrame = null;
+	
 	private boolean isEdit = false;
 	public boolean isEdit() {
 		return isEdit;
@@ -400,6 +402,9 @@ public class BasicInfoInputFrame extends JFrame {
 						basicInfo.setId(basicInfoId);
 						if(BasicInfoInputFrame.this.isEdit()){
 							basicInfoDao.updateHealthCardRecord(basicInfo);
+							if(basicInfoFrame != null){
+								basicInfoFrame.refreshBasicInfoTable();
+							}
 						} else {
 							//Original usage
 //							BasicInfoOperator.addHealthCardRecord(record);
@@ -412,6 +417,9 @@ public class BasicInfoInputFrame extends JFrame {
 									+ birthAddress + "\n"
 									+ currentAddress + "\n"
 									+ "改记录被成功添加！");
+							if(basicInfoFrame != null){
+								basicInfoFrame.refreshBasicInfoTable();
+							}
 						}
 						currentDialog.dispose();
 					}
@@ -458,6 +466,14 @@ public class BasicInfoInputFrame extends JFrame {
 		this.setSize(471, 410);
 		this.setContentPane(getJPanel());
 		this.setTitle("健康基本资料录入");
+	}
+
+	public BasicInfoManageFrame getBasicInfoFrame() {
+		return basicInfoFrame;
+	}
+
+	public void setBasicInfoFrame(BasicInfoManageFrame basicInfoFrame) {
+		this.basicInfoFrame = basicInfoFrame;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

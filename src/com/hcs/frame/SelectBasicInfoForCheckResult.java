@@ -23,6 +23,8 @@ import com.hcs.dao.BasicInfoDao;
 import com.hcs.util.UIUtil;
 
 public class SelectBasicInfoForCheckResult extends JFrame {
+	
+	private HealthCheckResultManageFrame checkResultFrame = null;
 
 	public SelectBasicInfoForCheckResult(CheckResultBean referredCheckResult)
 			throws HeadlessException {
@@ -119,6 +121,7 @@ public class SelectBasicInfoForCheckResult extends JFrame {
 					if(checkResult != null){
 						checkResultInput.initValue(SelectBasicInfoForCheckResult.this.getReferredCheckResult());
 					}
+					checkResultInput.setCheckResultFrame(SelectBasicInfoForCheckResult.this.getCheckResultFrame());
 					SelectBasicInfoForCheckResult.this.dispose();
 				}
 				
@@ -200,6 +203,14 @@ public class SelectBasicInfoForCheckResult extends JFrame {
 
 	public void setReferredCheckResult(CheckResultBean referredCheckResult) {
 		this.referredCheckResult = referredCheckResult;
+	}
+
+	public HealthCheckResultManageFrame getCheckResultFrame() {
+		return checkResultFrame;
+	}
+
+	public void setCheckResultFrame(HealthCheckResultManageFrame checkResultFrame) {
+		this.checkResultFrame = checkResultFrame;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -74,6 +74,7 @@ public class HealthCheckResultManageFrame extends JFrame {
 						CheckResultBean checkResult = checkDao.getCheckResult(value.toString());
 						
 						SelectBasicInfoForCheckResult sbifr = new SelectBasicInfoForCheckResult(checkResult);
+						sbifr.setCheckResultFrame(HealthCheckResultManageFrame.this);
 						UIUtil.setInCenter(sbifr);
 						sbifr.setVisible(true);
 					}
@@ -103,9 +104,14 @@ public class HealthCheckResultManageFrame extends JFrame {
 						int yesOrNo = JOptionPane.showConfirmDialog(null, "确认要删除选定的行吗？", "删除确认", JOptionPane.YES_NO_OPTION);
 						if(yesOrNo == JOptionPane.YES_OPTION){
 							DefaultTableModel model = (DefaultTableModel) getJTable().getModel();
-							CheckResultOperator.deleteCheckResultRecord(model.getValueAt(rowSel, 0).toString());
-							CheckResultOperator.saveData();
+							String id = model.getValueAt(rowSel, 0).toString();
+							checkDao.deleteCheckResultRecord(id);
+							
+							//Original usage
+//							CheckResultOperator.deleteCheckResultRecord(id);
+//							CheckResultOperator.saveData();
 							model.removeRow(rowSel);
+							JOptionPane.showMessageDialog(null, "成功删除体检结果！");
 						}
 					}
 				}
@@ -122,6 +128,47 @@ public class HealthCheckResultManageFrame extends JFrame {
 	//Original Usage
 //	private List<String[]> data = CheckResultOperator.getCheckResultRecords();  
 
+	private DefaultTableModel initHealthCheck(){
+		String[] columnNames = {"体检结果ID", "一般情况", "生化室", "放射科", "心电图", "检验科", "其他"};
+		List<CheckResultBean> resultList = checkDao.getCheckResultRecords();
+		String[][] initData = new String[resultList.size()][7];
+		for(int i = 0; i < resultList.size(); i++){
+			CheckResultBean result = resultList.get(i);
+			initData[i][0] = result.getResultID(); 
+			initData[i][1] = result.getGeneralInfo();
+			initData[i][2] = result.getShParam1();
+			initData[i][3] = result.getRayResult();
+			initData[i][4] = result.getHeartResult();
+			initData[i][5] = result.getCheckResult();
+			initData[i][6] = "暂无";
+		}
+		
+		//Original Usage
+//		for(int i = 0; i < initData.length; i++){
+//			initData[i] = new String[7];
+//			for(int j = 0; j <= initData[i].length; j++){
+//				if(j == 6){
+//					initData[i][j] = "无";
+//				}
+//				if(j > 5){
+//					continue;
+//				}
+//				if(j >= 2){
+//					initData[i][j] = data.get(i)[j + 6];
+//				} else {
+//					initData[i][j] = data.get(i)[j];
+//				}
+//			}
+//		}
+		DefaultTableModel model = new DefaultTableModel(initData, columnNames);
+		return model;
+	}
+	
+	public void refreshCheckResultTable(){
+		getJTable().setModel(initHealthCheck());
+		((DefaultTableModel)getJTable().getModel()).fireTableStructureChanged();
+	}
+	
 	/**
 	 * This method initializes jTable	
 	 * 	
@@ -129,39 +176,8 @@ public class HealthCheckResultManageFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			String[] columnNames = {"体检结果ID", "一般情况", "生化室", "放射科", "心电图", "检验科", "其他"};
-			List<CheckResultBean> resultList = checkDao.getCheckResultRecords();
-			String[][] initData = new String[resultList.size()][7];
-			for(int i = 0; i < resultList.size(); i++){
-				CheckResultBean result = resultList.get(i);
-				initData[i][0] = result.getResultID(); 
-				initData[i][1] = result.getGeneralInfo();
-				initData[i][2] = result.getShParam1();
-				initData[i][3] = result.getRayResult();
-				initData[i][4] = result.getHeartResult();
-				initData[i][5] = result.getCheckResult();
-				initData[i][6] = "暂无";
-			}
 			
-			//Original Usage
-//			for(int i = 0; i < initData.length; i++){
-//				initData[i] = new String[7];
-//				for(int j = 0; j <= initData[i].length; j++){
-//					if(j == 6){
-//						initData[i][j] = "无";
-//					}
-//					if(j > 5){
-//						continue;
-//					}
-//					if(j >= 2){
-//						initData[i][j] = data.get(i)[j + 6];
-//					} else {
-//						initData[i][j] = data.get(i)[j];
-//					}
-//				}
-//			}
-			DefaultTableModel model = new DefaultTableModel(initData, columnNames);
-			jTable = new JTable(model);
+			jTable = new JTable(initHealthCheck());
 			jTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		}
 		return jTable;

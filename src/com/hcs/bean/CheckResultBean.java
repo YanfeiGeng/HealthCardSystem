@@ -158,4 +158,12 @@ public class CheckResultBean {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "[体检报告ID=" + resultID + ", 一般="
+				+ generalInfo + ", 检查=" + shParam1 + ", X照射="
+				+ rayResult + ", 心电图=" + heartResult + ", 检验="
+				+ checkResult + "]";
+	}
+
 }
