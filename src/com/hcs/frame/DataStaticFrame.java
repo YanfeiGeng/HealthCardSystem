@@ -46,9 +46,9 @@ public class DataStaticFrame extends JFrame {
 	}
 
 	
-	private BasicInfoDao basicInfoDao = new BasicInfoDao(); 
+	private BasicInfoDao basicInfoDao = new BasicInfoDao();  //  @jve:decl-index=0:
 	
-	private HealthCheckResultDao healthCheckResultDao = new HealthCheckResultDao();  
+	private HealthCheckResultDao healthCheckResultDao = new HealthCheckResultDao();  //  @jve:decl-index=0:
 	/**
 	 * This method initializes jTree	
 	 * 	
@@ -58,12 +58,15 @@ public class DataStaticFrame extends JFrame {
 		if (jTree == null) {
 			DefaultMutableTreeNode root = new DefaultMutableTreeNode("健康体检系统信息统计");
 			List<BasicInformation> users = basicInfoDao.getHealthCardRecords();
+			List<CheckResultBean> checkResults = healthCheckResultDao.getCheckResultRecords();
 			for(BasicInformation user : users){
 				DefaultMutableTreeNode userNode = new DefaultMutableTreeNode(user);
-				List<CheckResultBean> checkResults = healthCheckResultDao.getCheckResultRecords();
 				for(CheckResultBean checkResult : checkResults){
-					DefaultMutableTreeNode checkResultNode = new DefaultMutableTreeNode(checkResult);
-					userNode.add(checkResultNode);
+					BasicInformation basic = checkResult.getReferedBasicInfo();
+					if(basic != null && basic.getId().equals(user.getId())){
+						DefaultMutableTreeNode checkResultNode = new DefaultMutableTreeNode(checkResult);
+						userNode.add(checkResultNode);
+					}
 				}
 				root.add(userNode);
 			}

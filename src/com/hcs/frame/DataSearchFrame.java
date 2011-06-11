@@ -3,6 +3,8 @@ package com.hcs.frame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,14 +19,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.hcs.bean.BasicInformation;
 import com.hcs.bean.CheckResultBean;
-import com.hcs.bean.Role;
 import com.hcs.bean.User;
 import com.hcs.dao.BasicInfoDao;
 import com.hcs.dao.HealthCheckResultDao;
-import com.hcs.dao.RoleDao;
 import com.hcs.dao.UserDao;
 import com.hcs.util.SearchType;
-import com.hcs.util.StringUtil;
 
 public class DataSearchFrame extends JFrame {
 
@@ -60,22 +59,40 @@ public class DataSearchFrame extends JFrame {
 			jPanel1 = new JPanel();
 			jPanel1.setLayout(new FlowLayout());
 			
-			JTextField condition = new JTextField();
+			final JTextField condition = new JTextField();
 			condition.setSize(new Dimension(200, 22));
 			condition.setPreferredSize(new Dimension(200, 22));
 			jPanel1.add(condition);
 			
-			JComboBox type = new JComboBox(SearchType.allTypes);
+			final JComboBox type = new JComboBox(SearchType.allTypes);
 			type.setSize(new Dimension(200, 22));
-			type.setPreferredSize(new Dimension(80, 22));
+			type.setPreferredSize(new Dimension(100, 22));
 			jPanel1.add(type);
 			
 			
 			JButton searchBtn = new JButton("搜索");
 			searchBtn.setPreferredSize(new Dimension(60, 22));
+			searchBtn.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent e) {
+					final String selType = type.getSelectedItem().toString(); 
+					String conditionStr = condition.getText().trim();
+					if(selType != null){
+						if(selType.equals(SearchType.USER_BASIC)){
+							getJTable().setModel(basicInfoResult(conditionStr));
+						} else if(selType.equals(SearchType.HEALTH_CHECK)) {
+							getJTable().setModel(checkResult(conditionStr));
+						} else if(selType.equals(SearchType.AUTH_USER)){
+							getJTable().setModel(userResult(conditionStr));
+						}
+					}
+					((DefaultTableModel)getJTable().getModel()).fireTableStructureChanged();
+				}
+				
+			});
+			
+			
 			jPanel1.add(searchBtn);
-			
-			
 			jPanel1.setSize(100, 100);
 		}
 		return jPanel1;
@@ -94,13 +111,11 @@ public class DataSearchFrame extends JFrame {
 		return jScrollPane;
 	}
 	
-	private RoleDao roleDao = new RoleDao();
-	
-	private BasicInfoDao basicDao = new BasicInfoDao();
+	private BasicInfoDao basicDao = new BasicInfoDao();  //  @jve:decl-index=0:
 	
 	//Basic info search
 	private DefaultTableModel basicInfoResult(String condition){
-		List<BasicInformation> basicRecords = basicDao.getHealthCardRecords();
+		List<BasicInformation> basicRecords = basicDao.searchUser(condition);
 		String[] columnNames = {"健康证ID", "姓名", "性别", "年龄", "出生日期", "籍贯", "现住址", "体检报告"};
 		String[][] initData = new String[basicRecords.size()][8];
 		for(int i = 0; i < basicRecords.size(); i++){
@@ -122,7 +137,7 @@ public class DataSearchFrame extends JFrame {
 	//Check result search result
 	private DefaultTableModel checkResult(String condition){
 		String[] columnNames = {"体检结果ID", "一般情况", "生化室", "放射科", "心电图", "检验科", "其他"};
-		List<CheckResultBean> resultList = checkResultDao.getCheckResultRecords();
+		List<CheckResultBean> resultList = checkResultDao.searchCheckResult(condition);
 		String[][] initData = new String[resultList.size()][7];
 		for(int i = 0; i < resultList.size(); i++){
 			CheckResultBean result = resultList.get(i);
@@ -140,9 +155,9 @@ public class DataSearchFrame extends JFrame {
 	
 	private UserDao userDao = new UserDao();
 	//User search result
-	private DefaultTableModel userResult(){
+	private DefaultTableModel userResult(String condition){
 		String[] userHeader = {"用户ID", "姓名", "权限", "其他"};
-		List<User> users = userDao.listAllUser();
+		List<User> users = userDao.searchUser(condition);
 		String[][] initData = new String[users.size()][4];
 		for(int i = 0; i < users.size(); i++){
 			User user = users.get(i);
@@ -155,20 +170,6 @@ public class DataSearchFrame extends JFrame {
 		return model;
 	}
 	
-	private DefaultTableModel initRoles(){
-		String[] columnNames = {"权限ID", "权限名称", "级别", "其他"};
-		List<Role> roles = roleDao.listRoles();
-		String[][] initData = new String[roles.size()][4];
-		for(int i = 0; i < roles.size(); i++){
-			Role role = roles.get(i);
-			initData[i][0] = role.getId();
-			initData[i][1] = role.getRoleName();
-			initData[i][2] = StringUtil.convertRoleIdToString(role.getRoleLevel());
-			initData[i][3] = "无";
-		}
-		DefaultTableModel model = new DefaultTableModel(initData, columnNames);
-		return model;
-	}
 
 	/**
 	 * This method initializes jTable	
@@ -177,7 +178,9 @@ public class DataSearchFrame extends JFrame {
 	 */
 	private JTable getJTable() {
 		if (jTable == null) {
-			jTable = new JTable(initRoles());
+			String[] headers = {"默认","默认", "默认", "默认", "默认", "默认"};
+			String[][] tableData = new String[0][6];
+			jTable = new JTable(new DefaultTableModel(tableData, headers));
 		}
 		return jTable;
 	}
@@ -212,7 +215,7 @@ public class DataSearchFrame extends JFrame {
 	private void initialize() {
 		this.setSize(874, 398);
 		this.setContentPane(getJContentPane());
-		this.setTitle("JFrame");
+		this.setTitle("数据检索界面");
 	}
 
 	/**

@@ -14,6 +14,64 @@ import com.hcs.dao.util.DBHelper;
 
 public class BasicInfoDao {
 
+	private String searchSQL = "SELECT id, name, sex, age, birthday, address, currentaddress, checkreport FROM health_basic_info WHERE name like ? or address like ? or currentAddress like ?;";
+
+	/**
+	 * Get all basic health info records
+	 * @return
+	 */
+	public List<BasicInformation> searchUser(String condition){
+		Connection conn = null;
+		PreparedStatement state = null;
+		ResultSet result = null;
+		List<BasicInformation> basicInfoList = new ArrayList<BasicInformation>();
+		try {
+			conn = DBHelper.getConnection();
+			if(condition == null || "".equals(condition)){
+				condition = "NULL";
+			}
+			state = conn.prepareStatement(searchSQL);
+			state.setString(1, "%" + condition + "%");
+			state.setString(2, "%" + condition + "%");
+			state.setString(3, "%" + condition + "%");
+			result = state.executeQuery();
+			while(result.next()){
+				BasicInformation basicInfo = new BasicInformation();
+				int resultId = result.getInt(1);
+				String name = result.getString(2);
+				String sex = result.getString(3);
+				String age = result.getString(4);
+				Date birthday = result.getDate(5);
+				String address = result.getString(6);
+				String currentaddress = result.getString(7);
+				String checkreport = result.getString(8);
+				basicInfo.setId(String.valueOf(resultId));
+				basicInfo.setName(name);
+				basicInfo.setSex(sex);
+				basicInfo.setAge(age);
+				basicInfo.setBirthday(birthday);
+				basicInfo.setAddress(address);
+				basicInfo.setCurrentAddress(currentaddress);
+				basicInfo.setCheckReport(checkreport);
+				basicInfoList.add(basicInfo);
+			}
+			return basicInfoList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+				state.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	
 	private String getListSQL = "SELECT id, name, sex, age, birthday, address, currentaddress, checkreport FROM health_basic_info;";
 	/**

@@ -15,6 +15,50 @@ public class UserDao {
 	
 	private RoleDao roleDao = new RoleDao();
 	
+	private String searchSQL = "SELECT id, name, passwd, roleId FROM health_user WHERE name LIKE ?";
+	
+	/**
+	 * Search users
+	 * @return
+	 */
+	public List<User> searchUser(String condition){
+		List<User> users = new ArrayList<User>();
+		Connection conn = null;
+		PreparedStatement state = null;
+		ResultSet result = null;
+		try {
+			conn = DBHelper.getConnection();
+			if(condition == null || "".equals(condition)){
+				condition = "NULL";
+			}
+			state = conn.prepareStatement(searchSQL);
+			state.setString(1, "%" + condition + "%");
+			result = state.executeQuery();
+			while(result.next()){
+				User resultUser = new User();
+				resultUser.setId(result.getString(1));
+				resultUser.setName(result.getString(2));
+				resultUser.setPassword(result.getString(3));
+				resultUser.setRole(roleDao.getRoleById(result.getString("roleid")));
+				users.add(resultUser);
+			}
+			return users;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+				state.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	private String listUserSQL = "SELECT id, name, passwd, roleId FROM health_user";
 	
 	/**

@@ -15,6 +15,70 @@ public class HealthCheckResultDao {
 	
 	private BasicInfoDao basicDao = new BasicInfoDao();
 	
+	private String searchSQL = "SELECT resultID, generalInfo, shParam1, shParam2, shParam3, shParam4, shParam5, shParam6, shParam7, rayResult, heartResult, checkResult, basicInfoId FROM health_check_result"
+			+ " WHERE generalInfo LIKE ? OR shParam1 LIKE ? OR shParam2 LIKE ? OR shParam3 LIKE ? OR shParam4 LIKE ? OR shParam5 LIKE ? OR shParam6 LIKE ? OR shParam7 LIKE ? OR rayResult LIKE ? OR heartResult LIKE ? OR checkResult LIKE ?";
+	
+	/**
+	 * Search check result with condition
+	 * @return
+	 */
+	public List<CheckResultBean> searchCheckResult(String condition){
+		Connection conn = null;
+		PreparedStatement state = null;
+		ResultSet result = null;
+		List<CheckResultBean> checkResultList = new ArrayList<CheckResultBean>();
+		try {
+			conn = DBHelper.getConnection();
+			if(condition == null || "".equals(condition)){
+				condition = "NULL";
+			}
+			state = conn.prepareStatement(searchSQL);
+			state.setString(1, "%" + condition + "%");
+			state.setString(2, "%" + condition + "%");
+			state.setString(3, "%" + condition + "%");
+			state.setString(4, "%" + condition + "%");
+			state.setString(5, "%" + condition + "%");
+			state.setString(6, "%" + condition + "%");
+			state.setString(7, "%" + condition + "%");
+			state.setString(8, "%" + condition + "%");
+			state.setString(9, "%" + condition + "%");
+			state.setString(10, "%" + condition + "%");
+			state.setString(11, "%" + condition + "%");
+			result = state.executeQuery();
+			while(result.next()){
+				CheckResultBean checkResultB = new CheckResultBean();
+				checkResultB.setResultID(String.valueOf(result.getInt(1)));
+				checkResultB.setGeneralInfo(result.getString(2));
+				checkResultB.setShParam1(result.getString(3));
+				checkResultB.setShParam2(result.getString(4));
+				checkResultB.setShParam3(result.getString(5));
+				checkResultB.setShParam4(result.getString(6));
+				checkResultB.setShParam5(result.getString(7));
+				checkResultB.setShParam6(result.getString(8));
+				checkResultB.setShParam7(result.getString(9));
+				checkResultB.setRayResult(result.getString(10));
+				checkResultB.setHeartResult(result.getString(11));
+				checkResultB.setCheckResult(result.getString(12));
+				checkResultB.setReferedBasicInfo(basicDao.getHealthCardRecordById(result.getString(13)));
+				checkResultList.add(checkResultB);
+			}
+			return checkResultList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+				state.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	private String getRecordListSQL = "SELECT resultID, generalInfo, shParam1, shParam2, shParam3, shParam4, shParam5, shParam6, shParam7, rayResult, heartResult, checkResult, basicInfoId FROM health_check_result";
 	/**
 	 * Return the health check records result

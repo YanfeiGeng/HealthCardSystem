@@ -4,11 +4,11 @@ import java.util.Vector;
 
 public class SearchType {
 	
-	public static final String USER_BASIC = "基本资料";
+	public static final String USER_BASIC = "健康证资料";
 	
 	public static final String HEALTH_CHECK = "体检结果";
 	
-	public static final String AUTH_USER = "管理员";
+	public static final String AUTH_USER = "管理人员";
 	
 	public static Vector<String> allTypes = null;
 	
